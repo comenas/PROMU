@@ -94,9 +94,34 @@ def Mat_obj7_Puntos(ace,t):
         if  abs(velocidad[i]) > 3 * std_reposo: # para localizarlo se mide cuando la velocidad es el triple que en reposo
             idx_s = i # al encontralo se define y rompe el bucle
             break
-    idx_T0 = np.argmax(velocidad[idx_s:]) + idx_s # indice de despegue (cuando salta ya impulsado) cuando la velocidad es máxima después del impulso
+    ventana_busqueda = int(FM)  # 1 segundo de muestras
+    idx_T0 = np.argmax(velocidad[idx_s : idx_s + ventana_busqueda]) + idx_s # indice de despegue (cuando salta ya impulsado) cuando la velocidad es máxima después del impulso
     idx_L = np.argmax(ace_neta[idx_T0:]) + idx_T0 # indice de aterrizaje (cuando vuelve al suelo) el cuando la aceleración es máxima depués del despegue
     t_aire = t[idx_L] - t[idx_T0] # tiempo en el aire diferencia entre salto y aterrizaje
+    print(f"idx_s (inicio impulso): {idx_s}")
+    print(f"idx_T0 (despegue): {idx_T0}")
+    print(f"idx_L (aterrizaje): {idx_L}")
+    print(f"t[idx_s]: {t[idx_s]:.3f} s")
+    print(f"t[idx_T0]: {t[idx_T0]:.3f} s")
+    print(f"t[idx_L]: {t[idx_L]:.3f} s")
+    print(f"velocidad max en ventana: {np.max(velocidad[idx_s:idx_s+int(FM)]):.3f}")
+    print(f"velocidad en idx_s: {velocidad[idx_s]:.3f}")
+    print(f"velocidad en idx_T0: {velocidad[idx_T0]:.3f}")
+    print(f"ace en idx_T0: {ace[idx_T0]:.3f}")
+    print(f"g_media: {g_media:.3f}")
+    print(f"idx_reposo: {idx}, tam_ventana: {tam_ventana}")
+    print(f"ace media en reposo: {np.mean(ace[idx:idx+tam_ventana]):.4f}")
+    print(f"ace max total: {np.max(ace):.2f}")
+    print(f"ace max en primeros 2s: {np.max(ace[:int(2*FM)]):.2f}")
+    print(f"ace_neta max: {np.max(ace_neta):.4f}")
+    print(f"ace_neta min: {np.min(ace_neta):.4f}")
+    print(f"sua_ace max: {np.max(sua_ace):.4f}")
+    print(f"sua_ace min: {np.min(sua_ace):.4f}")
+    idx_pico_real = np.argmax(sua_ace)
+    print(f"idx pico sua_ace: {idx_pico_real}")
+    print(f"t pico sua_ace: {t[idx_pico_real]:.3f} s")
+    print(f"idx_s + FM: {idx_s + int(FM)}")
+    print(f"t[idx_s + FM]: {t[idx_s + int(FM)]:.3f} s")
     return  idx_T0, idx_L, t_aire, velocidad
 
 def Mat_obj8_Altura(ace,t):
