@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from data_loader import *
+from core.data_loader import *
 from scipy.signal import savgol_filter
 from scipy.integrate import cumulative_trapezoid
 
@@ -70,11 +70,10 @@ def Mat_obj5_GR(ace,FM):
     valores = ace[idx : idx + tam_ventana] # la aceleración en la ventana de reposo es la gravedad
     return np.mean(valores)
 
-def Mat_obj6_Integra(var,t,y0):
-    """
-    función que integra un array segun el tiempo y un valor inicial con una función de scipy
-    """
-    int_array = cumulative_trapezoid(var,t,initial = y0) # función de scipy para integrar arrays
+
+def Mat_obj6_Integra(var, t, y0):
+    int_array = cumulative_trapezoid(var, t, initial=0)
+    int_array = int_array + y0
     return int_array
 
 def Mat_obj7_Puntos(ace,t):

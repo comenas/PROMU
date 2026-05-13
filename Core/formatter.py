@@ -1,8 +1,5 @@
 def format_height(value_m):
-    if value_m < 1:
-        value = f"{value_m * 100:.1f} cm"
-    else:
-        value = f"{value_m:.1f} m" 
+    value = f"{value_m * 100:.1f} cm"
     return value
 
 def format_velocity(v):

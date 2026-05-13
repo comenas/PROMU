@@ -1,5 +1,5 @@
 import pytest
-from Core.data_loader import *
+from core.data_loader import *
 import pandas as pd
 
 
@@ -22,8 +22,11 @@ def test_validate_file_extension_error():
         validate_file_extension("fichero_sin_extension_correcta.txt")
 
 
+
+
 def test_read_excel_file(tmp_path):
     fichero = tmp_path / "prueba.xlsx"
+    fichero.write_text("contenido")
     df_original = pd.DataFrame({"col1": [1, 2, 3], "col2": [4, 5, 6]})
     df_original.to_excel(str(fichero), index=False)
     resultado = read_excel_file(str(fichero))
@@ -65,4 +68,3 @@ def test_validate_min_lenght_error():
     array = np.array([1.0])
     with pytest.raises(ValueError):
         validate_min_length(array,2)
-
