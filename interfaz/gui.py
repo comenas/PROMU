@@ -1,60 +1,196 @@
-from guizero import App
 from PIL import Image, ImageTk, ImageFont, ImageDraw
 import tkinter as tk
 import ctypes
 import os
 
-# Registrar la fuente
 ruta_fuente = os.path.abspath("fuente_minecraft.ttf")
 ctypes.windll.gdi32.AddFontResourceW(ruta_fuente)
 
 ANCHO, ALTO = 1280, 960
 
-app = App(title="Minecraft: Jump Edition", width=ANCHO, height=ALTO)
-app.tk.resizable(False, False)
+# ── Utilidades ────────────────────────────────────────────────────────────────
 
-# Fondo
-img = Image.open("minecraft_fondo.png").resize((ANCHO, ALTO), Image.LANCZOS)
-tk_img = ImageTk.PhotoImage(img)
+def crear_boton_imagen(frame, canvas, imagen_path, texto, fuente_path, fuente_size, x, y, ancho, alto, comando):
+    btn_img = Image.open(imagen_path).resize((ancho, alto), Image.LANCZOS)
+    draw = ImageDraw.Draw(btn_img)
+    fuente = ImageFont.truetype(fuente_path, fuente_size)
+    bbox = draw.textbbox((0, 0), texto, font=fuente)
+    tx = (ancho - (bbox[2] - bbox[0])) // 2
+    ty = (alto  - (bbox[3] - bbox[1])) // 2
+    draw.text((tx, ty), texto, font=fuente, fill="white")
+    btn_tk = ImageTk.PhotoImage(btn_img)
+    boton = tk.Button(frame, image=btn_tk, borderwidth=0,
+                      highlightthickness=0, cursor="hand2", command=comando)
+    boton.image = btn_tk
+    canvas.create_window(x, y, window=boton)
+    return boton
 
-canvas = tk.Canvas(app.tk, width=ANCHO, height=ALTO, highlightthickness=0)
-canvas.place(x=0, y=0)
-canvas.create_image(0, 0, anchor="nw", image=tk_img)
+def crear_canvas(frame, imagen_path):
+    img = Image.open(imagen_path).resize((ANCHO, ALTO), Image.LANCZOS)
+    tk_img = ImageTk.PhotoImage(img)
+    canvas = tk.Canvas(frame, width=ANCHO, height=ALTO, highlightthickness=0)
+    canvas.place(x=0, y=0)
+    canvas.create_image(0, 0, anchor="nw", image=tk_img)
+    canvas.image = tk_img
+    return canvas
 
-# Crear imagen del botón con texto encima
-btn_img = Image.open("minecraft_boton.png").resize((440, 40), Image.LANCZOS)
-draw = ImageDraw.Draw(btn_img)
+def crear_entrada(frame, canvas, x, y, ancho, alto, imagen_caja, fuente, password=False):
+    caja_img = Image.open(imagen_caja).resize((ancho, alto), Image.LANCZOS)
+    caja_tk = ImageTk.PhotoImage(caja_img)
+    canvas.create_image(x, y, image=caja_tk, anchor="center")
+    if not hasattr(canvas, "image_refs"):
+        canvas.image_refs = []
+    canvas.image_refs.append(caja_tk)
+    entrada = tk.Entry(
+        frame,
+        font=fuente,
+        bg="#1a1108",
+        fg="white",
+        insertbackground="white",
+        relief="flat",
+        borderwidth=0,
+        show="*" if password else ""
+    )
+    canvas.create_window(x, y, window=entrada, width=ancho - 10, height=alto - 10)
+    return entrada
 
-# Escribir texto con la fuente Minecraft
-fuente = ImageFont.truetype("fuente_minecraft.ttf", 18)
-texto = "Iniciar sesión"
+def limpiar_frame(frame):
+    for widget in frame.winfo_children():
+        widget.destroy()
 
-# Centrar el texto en el botón
-bbox = draw.textbbox((0, 0), texto, font=fuente)
-texto_ancho = bbox[2] - bbox[0]
-texto_alto = bbox[3] - bbox[1]
-x = (400 - texto_ancho) // 2
-y = (40 - texto_alto) // 2
+# ── Pantallas ─────────────────────────────────────────────────────────────────
 
-draw.text((x, y), texto, font=fuente, fill="white")
+def pantalla_principal(frame):
+    limpiar_frame(frame)
+    canvas = crear_canvas(frame, "minecraft_fondo.png")
 
-btn_tk = ImageTk.PhotoImage(btn_img)
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Iniciar sesión",
+                       "fuente_minecraft.ttf", 25,
+                       x=645, y=490, ancho=452, alto=50,
+                       comando=lambda: pantalla_inicio_sesion(frame))
 
-# Botón transparente con la imagen
-def iniciar_sesion():
-    print("Iniciando sesión...")
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Continuar como invitado",
+                       "fuente_minecraft.ttf", 25,
+                       x=645, y=551, ancho=452, alto=50,
+                       comando=lambda: pantalla_invitado(frame))
 
-boton = tk.Button(
-    app.tk,
-    image=btn_tk,
-    borderwidth=0,
-    highlightthickness=0,
-    bg="#1a1a2e",        # color que no se note
-    activebackground="#1a1a2e",
-    cursor="hand2",
-    command=iniciar_sesion
-)
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Configuración",
+                       "fuente_minecraft.ttf", 25,
+                       x=645, y=612, ancho=452, alto=50,
+                       comando=lambda: pantalla_configuracion(frame))
 
-canvas.create_window(640, 480, window=boton)
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Salir",
+                       "fuente_minecraft.ttf", 25,
+                       x=645, y=712, ancho=452, alto=50,
+                       comando=root.destroy)  # cierra la app
 
-app.display()
+def pantalla_inicio_sesion(frame):
+    limpiar_frame(frame)
+    canvas = crear_canvas(frame, "minecraft_inicio_sesion.png")
+    fuente_mc = ("Minecraft", 16)
+
+    canvas.create_text(640, 250, text="Inicia sesión en el servidor UPV",
+                       font=("Minecraft", 24), fill="white", anchor="center")
+
+    canvas.create_text(640, 360, text="Usuario",
+                       font=("Minecraft", 14), fill="white", anchor="center")
+    entrada_usuario = crear_entrada(frame, canvas, x=640, y=400, ancho=400, alto=40,
+                                    imagen_caja="minecraft_caja.png", fuente=fuente_mc)
+
+    canvas.create_text(640, 460, text="Contraseña",
+                       font=("Minecraft", 14), fill="white", anchor="center")
+    entrada_password = crear_entrada(frame, canvas, x=640, y=500, ancho=400, alto=40,
+                                     imagen_caja="minecraft_caja.png", fuente=fuente_mc, password=True)
+
+    def iniciar_sesion():
+        usuario = entrada_usuario.get()
+        password = entrada_password.get()
+        print(f"Usuario: {usuario} | Contraseña: {password}")
+
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Iniciar sesión",
+                       "fuente_minecraft.ttf", 18,
+                       x=640, y=580, ancho=400, alto=40,
+                       comando=iniciar_sesion)
+
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Volver",
+                       "fuente_minecraft.ttf", 18,
+                       x=640, y=640, ancho=400, alto=40,
+                       comando=lambda: pantalla_principal(frame))
+
+def pantalla_invitado(frame):
+    limpiar_frame(frame)
+    canvas = crear_canvas(frame, "minecraft_inicio_sesion.png")
+
+    canvas.create_text(640, 300, text="Rankings",
+                       font=("Minecraft", 30), fill="white", anchor="center")
+
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Ver ranking masculino",
+                       "fuente_minecraft.ttf", 20,
+                       x=640, y=450, ancho=452, alto=50,
+                       comando=lambda: print("Ranking masculino"))  # cambia por tu pantalla
+
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Ver ranking femenino",
+                       "fuente_minecraft.ttf", 20,
+                       x=640, y=520, ancho=452, alto=50,
+                       comando=lambda: print("Ranking femenino"))  # cambia por tu pantalla
+
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Volver",
+                       "fuente_minecraft.ttf", 20,
+                       x=640, y=650, ancho=452, alto=50,
+                       comando=lambda: pantalla_principal(frame))
+
+def pantalla_configuracion(frame):
+    limpiar_frame(frame)
+    canvas = crear_canvas(frame, "minecraft_inicio_sesion.png")
+
+    canvas.create_text(640, 250, text="Configuración",
+                       font=("Minecraft", 30), fill="white", anchor="center")
+
+    # Etiqueta volumen
+    canvas.create_text(640, 380, text="Volumen",
+                       font=("Minecraft", 18), fill="white", anchor="center")
+
+    # Slider de volumen
+    volumen = tk.IntVar(value=50)
+    slider = tk.Scale(
+        frame,
+        from_=0, to=100,
+        orient="horizontal",
+        variable=volumen,
+        bg="#1a1108",
+        fg="white",
+        highlightthickness=0,
+        troughcolor="#3a3a3a",
+        length=400,
+        font=("Minecraft", 12),
+        label=""
+    )
+    canvas.create_window(640, 430, window=slider, width=400, height=50)
+
+    # Mostrar valor actual
+    def actualizar_label(val):
+        etiqueta_vol.config(text=f"{val}%")
+
+    etiqueta_vol = tk.Label(frame, text="50%", font=("Minecraft", 14),
+                            bg="#1a1108", fg="white")
+    canvas.create_window(640, 480, window=etiqueta_vol)
+    slider.config(command=actualizar_label)
+
+    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Volver",
+                       "fuente_minecraft.ttf", 20,
+                       x=640, y=650, ancho=452, alto=50,
+                       comando=lambda: pantalla_principal(frame))
+
+# ── Main ──────────────────────────────────────────────────────────────────────
+
+root = tk.Tk()
+root.title("Minecraft: Jump Edition")
+root.geometry(f"{ANCHO}x{ALTO}")
+root.resizable(False, False)
+
+frame = tk.Frame(root, width=ANCHO, height=ALTO)
+frame.place(x=0, y=0)
+
+pantalla_principal(frame)
+
+root.mainloop()
