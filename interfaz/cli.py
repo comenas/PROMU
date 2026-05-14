@@ -28,7 +28,7 @@ def run():
     tiempo, ace_x, ace_y, ace_z, ace = Mat_obj1_AD(ruta)
 
     # 3. Calcular resultados
-    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, tiempo)
+    idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, tiempo)
     h1, h2, h3 = Mat_obj8_Altura(ace, tiempo)
 
     # 4. Formatear y mostrar
@@ -40,7 +40,10 @@ def run():
         "velocidad_despegue": velocidad[idx_T0],
     }
     formateados = format_results(resultados)
-
+    print(f"idx_T0: {idx_T0}")
+    print(f"idx_L: {idx_L}")
+    print(f"t_aire: {t_aire}")
+    print(f"velocidad_despegue: {velocidad[idx_T0]}")
     for clave, valor in formateados.items():
         print(f"{clave}: {valor}")
 
