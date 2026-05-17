@@ -90,13 +90,15 @@ def Mat_obj7_Puntos(ace,t):
     idx, tam_ventana = Mat_obj4_FR(ace,FM) # indice y el tamaño de la ventana
     vent_reposo = velocidad[idx : idx + tam_ventana] # ventana de reposo
     std_reposo = np.std(vent_reposo) # valor de reposo  
+    idx_s = 0
     for i in range(len(velocidad)): # bucle para averiguar donde está el indice de impulso (cuando se impulsa)
         if  abs(velocidad[i]) > 3 * std_reposo: # para localizarlo se mide cuando la velocidad es el triple que en reposo
             idx_s = i # al encontralo se define y rompe el bucle
             break
-    idx_T0 = np.argmax(velocidad[idx_s:]) + idx_s # indice de despegue (cuando salta ya impulsado) cuando la velocidad es máxima después del impulso
-    idx_L = np.argmax(ace_neta[idx_T0:]) + idx_T0 # indice de aterrizaje (cuando vuelve al suelo) el cuando la aceleración es máxima depués del despegue
+    idx_T0 = np.argmax(velocidad[idx_s:]) + idx_s
+    idx_L  = np.argmax(ace_neta[idx_T0:]) + idx_T0
     t_aire = t[idx_L] - t[idx_T0] # tiempo en el aire diferencia entre salto y aterrizaje
+    print(f"idx_s={idx_s}, idx_T0={idx_T0}, idx_L={idx_L}, len={len(ace)}")
     return  idx_s, idx_T0, idx_L, t_aire, velocidad
 
 def Mat_obj8_Altura(ace,t):

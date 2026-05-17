@@ -44,6 +44,7 @@ def run():
         "velocidad_despegue": velocidad[idx_T0],
     }
     formateados = format_results(resultados)
+    print(resultados)
 
     for clave, valor in formateados.items():
         print(f"{clave}: {valor}")
