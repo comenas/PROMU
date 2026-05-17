@@ -89,39 +89,23 @@ def Mat_obj7_Puntos(ace,t):
     velocidad = Mat_obj6_Integra(ace_neta,t,0) # velocidad 
     idx, tam_ventana = Mat_obj4_FR(ace,FM) # indice y el tamaño de la ventana
     vent_reposo = velocidad[idx : idx + tam_ventana] # ventana de reposo
-    std_reposo = np.std(vent_reposo) # valor de reposo 
-    umbral = 3 * std_reposo
-    inicio_busqueda = int(FM)  # empezar a buscar desde el segundo 1
-    idx_s = int(FM)     # valor por defecto si no encuentra nada
-    for i in range(inicio_busqueda, len(velocidad)):
-        if abs(ace_neta[i]) > umbral:
-            idx_s = i
-            break 
-    idx_L = np.argmax(ace_neta)
-
-    for i in range(idx_L, 0, -1):
-        if ace_neta[i] < g_media / 2:
-            idx_T0 = i
+    std_reposo = np.std(vent_reposo) # valor de reposo  
+    for i in range(len(velocidad)): # bucle para averiguar donde está el indice de impulso (cuando se impulsa)
+        if  abs(velocidad[i]) > 3 * std_reposo: # para localizarlo se mide cuando la velocidad es el triple que en reposo
+            idx_s = i # al encontralo se define y rompe el bucle
             break
-# seguir hacia atrás mientras ace sigue baja (fase de vuelo)
-    while idx_T0 > 0 and ace_neta[idx_T0] < g_media / 2:
-        idx_T0 -= 1 # indice de despegue (cuando salta ya impulsado) cuando la velocidad es máxima después del impulso
-        # indice de aterrizaje (cuando vuelve al suelo) el cuando la aceleración es máxima depués del despegue
+    idx_T0 = np.argmax(velocidad[idx_s:]) + idx_s # indice de despegue (cuando salta ya impulsado) cuando la velocidad es máxima después del impulso
+    idx_L = np.argmax(ace_neta[idx_T0:]) + idx_T0 # indice de aterrizaje (cuando vuelve al suelo) el cuando la aceleración es máxima depués del despegue
     t_aire = t[idx_L] - t[idx_T0] # tiempo en el aire diferencia entre salto y aterrizaje
-    idx_T0_rel = idx_T0 - idx_s  # índice relativo al array recortado
-    idx_L_rel  = idx_L  - idx_s 
-    return idx_s, idx_T0_rel, idx_L_rel, t_aire, velocidad
+    return  idx_s, idx_T0, idx_L, t_aire, velocidad
 
 def Mat_obj8_Altura(ace,t):
     """
     función que calcula mediante las 3 formulas dadas en física la altura del salto utilizando todo lo anterior
     """
-    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, t)
-    desplazamiento = Mat_obj6_Integra(velocidad, t[idx_s:], 0)
-    FM = Mat_obj2_FM(t)
-    g_media = Mat_obj5_GR(ace, FM)
-    g = g_media
-    h1 = g * t_aire**2 / 8 # la altura según tiempo de vuelo
+    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace,t) # los valores calculados en la anterior
+    desplazamiento = Mat_obj6_Integra(velocidad,t,0) # el desplazamiento integrando la velocidad
+    h1 = 9.81 * t_aire**2 / 8 # la altura según tiempo de vuelo
     h2 = velocidad[idx_T0]**2 / (2 * 9.81) # la altura según velocidad de despegue
     h3 = max(desplazamiento[idx_T0:idx_L]) # la altura según desplazamiento 
     return h1,h2,h3 # devuelve las 3 estimaciones 
