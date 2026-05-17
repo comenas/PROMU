@@ -1,11 +1,8 @@
 from PIL import Image, ImageTk, ImageFont, ImageDraw
 import tkinter as tk
-import ctypes
 import os
 
-ruta_fuente = os.path.abspath("fuente_minecraft.ttf")
-ctypes.windll.gdi32.AddFontResourceW(ruta_fuente)
-
+fuente = ImageFont.truetype("fuente_minecraft.ttf", size=24)
 ANCHO, ALTO = 1280, 960
 
 # ── Utilidades ────────────────────────────────────────────────────────────────
