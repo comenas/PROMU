@@ -1,4 +1,8 @@
 import sys
+import os
+# Agregar el directorio raíz al path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from core.matemáticas import Mat_obj1_AD, Mat_obj7_Puntos, Mat_obj8_Altura
 from core.data_loader import validate_file_exists, validate_file_extension
 from core.formatter import format_results
@@ -40,6 +44,7 @@ def run():
         "velocidad_despegue": velocidad[idx_s + idx_T0],
     }
     formateados = format_results(resultados)
+    print(resultados)
 
     for clave, valor in formateados.items():
         print(f"{clave}: {valor}")
