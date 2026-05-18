@@ -37,7 +37,7 @@ def run():
         "altura_velocidad": h2,
         "altura_desplazamiento": h3,
         "tiempo_vuelo": t_aire,
-        "velocidad_despegue": velocidad[idx_T0],
+        "velocidad_despegue": velocidad[idx_s + idx_T0],
     }
     formateados = format_results(resultados)
 
