@@ -16,6 +16,7 @@ def Mat_obj1_AD(path):
     ace_x = extract_column_as_float(archivo, 1) # extract_column_as_float del data_loader
     ace_y = extract_column_as_float(archivo, 2) # cada columna es un dato 
     ace_z = extract_column_as_float(archivo, 3)
+    print(len(archivo.columns))
     if len(archivo.columns) > 4: # puede haber aceleración en el excel o necesitar calcularla
         aceleracion = extract_column_as_float(archivo, 4) # si está en el excel se coge de ahí
     else:
@@ -111,3 +112,4 @@ def Mat_obj8_Altura(ace,t):
     h2 = velocidad[idx_T0]**2 / (2 * 9.81) # la altura según velocidad de despegue
     h3 = max(desplazamiento[idx_T0:idx_L]) # la altura según desplazamiento 
     return h1,h2,h3 # devuelve las 3 estimaciones 
+
