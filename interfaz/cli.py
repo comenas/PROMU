@@ -32,8 +32,8 @@ def run():
     tiempo, ace_x, ace_y, ace_z, ace = Mat_obj1_AD(ruta)
 
     # 3. Calcular resultados
-    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, tiempo)
-    h1, h2, h3 = Mat_obj8_Altura(ace, tiempo)
+    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace,ace_y ,tiempo)
+    h1, h2, h3 = Mat_obj8_Altura(ace,ace_y ,tiempo)
 
     # 4. Formatear y mostrar
     resultados = {
@@ -41,7 +41,7 @@ def run():
         "altura_velocidad": h2,
         "altura_desplazamiento": h3,
         "tiempo_vuelo": t_aire,
-        "velocidad_despegue": velocidad[idx_s + idx_T0],
+        "velocidad_despegue": velocidad[idx_T0],
     }
     formateados = format_results(resultados)
     print(resultados)

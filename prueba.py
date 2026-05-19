@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from core.matemáticas import Mat_obj2_FM, Mat_obj3_Sua, Mat_obj5_GR, Mat_obj6_Integra
 
-df = pd.read_excel("salto1.xlsx")
+df = pd.read_excel("Archivo_salto.xlsx")
 tiempo = df.iloc[:, 0].to_numpy(dtype=float)
-ace    = df.iloc[:, 4].to_numpy(dtype=float)
+ace    = df.iloc[:, 1].to_numpy(dtype=float)
 
 FM       = Mat_obj2_FM(tiempo)
 sua      = Mat_obj3_Sua(ace, FM)
