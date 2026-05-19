@@ -1,60 +1,77 @@
 import pyglet
+import os
+import random
 
-_musica = None  # referencia global al reproductor
+# ── Lista de canciones ─────────────────────────────────────────────────────────
+_canciones = [
+    "aria math.mp3",
+    "wet hands.mp3",
+    "minecraft.mp3",
+    "haggstrom.mp3",
+    "blind spots.mp3",
+]
+
+_reproductor = None
+_volumen_actual = 50
+_cola = []
+_base = None  # carpeta donde están los mp3
 
 def inicializar_audio():
-    """
-    Con pyglet no hace falta inicialización explícita.
-    Se mantiene la función para no cambiar el resto del código.
-    """
     pass
 
-def cargar_musica(ruta):
-    """
-    Carga un archivo de música. Acepta .mp3, .ogg o .wav.
-    Lanza FileNotFoundError si el fichero no existe.
-    """
-    import os
-    global _musica
-    if not os.path.exists(ruta):
-        raise FileNotFoundError(f"No se encontró el fichero de música: {ruta}")
-    origen = pyglet.media.load(ruta)
-    _musica = pyglet.media.Player()
-    _musica.queue(origen)
+def _construir_cola():
+    """Genera una cola aleatoria con todas las canciones."""
+    global _cola
+    mezcladas = _canciones[:]
+    random.shuffle(mezcladas)
+    _cola = [os.path.join(_base, nombre) for nombre in mezcladas]
 
-def reproducir_musica(repeticiones=-1):
+def _siguiente_cancion():
+    """Carga y reproduce la siguiente canción de la cola."""
+    global _reproductor, _cola
+    if not _cola:
+        _construir_cola()
+    ruta_cancion = _cola.pop(0)
+    origen = pyglet.media.load(ruta_cancion, streaming=False)
+    _reproductor = pyglet.media.Player()
+    _reproductor.volume = _volumen_actual / 100
+    _reproductor.queue(origen)
+    _reproductor.push_handlers(on_player_eos=_siguiente_cancion)
+    _reproductor.play()
+
+def cargar_musica(base):
     """
-    Reproduce la música cargada en bucle infinito.
+    Valida que existan todos los archivos en la carpeta indicada.
     """
-    global _musica
-    if _musica is None:
-        raise RuntimeError("No hay música cargada. Llama primero a cargar_musica().")
-    _musica.loop = True
-    _musica.play()
+    global _base
+    _base = base
+    for nombre in _canciones:
+        ruta_cancion = os.path.join(base, nombre)
+        if not os.path.exists(ruta_cancion):
+            raise FileNotFoundError(f"No se encontró: {ruta_cancion}")
+
+def reproducir_musica(base=None):
+    """Construye la cola y empieza la reproducción."""
+    global _base
+    if base is not None:
+        _base = base
+    _construir_cola()
+    _siguiente_cancion()
 
 def detener_musica():
-    """
-    Detiene la música.
-    """
-    global _musica
-    if _musica is not None:
-        _musica.pause()
+    global _reproductor
+    if _reproductor is not None:
+        _reproductor.pause()
 
 def ajustar_volumen(porcentaje_volumen):
-    """
-    Ajusta el volumen. Recibe un valor entre 0 y 100 y lo convierte a escala 0.0-1.0.
-    """
-    global _musica
+    global _volumen_actual, _reproductor
     if not (0 <= porcentaje_volumen <= 100):
         raise ValueError(f"El volumen debe estar entre 0 y 100, recibido: {porcentaje_volumen}")
-    if _musica is not None:
-        _musica.volume = porcentaje_volumen / 100
+    _volumen_actual = porcentaje_volumen
+    if _reproductor is not None:
+        _reproductor.volume = porcentaje_volumen / 100
 
 def obtener_volumen():
-    """
-    Devuelve el volumen actual como porcentaje (0-100).
-    """
-    global _musica
-    if _musica is not None:
-        return int(_musica.volume * 100)
-    return 50  # valor por defecto si no hay música cargada
+    if _reproductor is not None:
+        return int(_reproductor.volume * 100)
+    return _volumen_actual
