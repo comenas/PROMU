@@ -1,9 +1,14 @@
 from PIL import Image, ImageTk, ImageFont, ImageDraw
 import tkinter as tk
 import os
-from archivos_interfaz import *
-archivos = archivos_interfaz
-fuente = ImageFont.truetype("fuente_minecraft.ttf", size=24)
+
+# Ruta base: carpeta donde está este archivo
+BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
+
+def ruta(nombre):
+    return os.path.join(BASE, nombre)
+
+fuente = ImageFont.truetype(ruta("fuente_minecraft.ttf"), size=24)
 ANCHO, ALTO = 1280, 960
 
 # ── Utilidades ────────────────────────────────────────────────────────────────
@@ -60,31 +65,31 @@ def limpiar_frame(frame):
 
 def pantalla_principal(frame):
     limpiar_frame(frame)
-    canvas = crear_canvas(frame, "minecraft_fondo.png")
+    canvas = crear_canvas(frame, ruta("minecraft_fondo.png"))
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Iniciar sesión",
-                       "fuente_minecraft.ttf", 25,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Iniciar sesión",
+                       ruta("fuente_minecraft.ttf"), 25,
                        x=645, y=490, ancho=452, alto=50,
                        comando=lambda: pantalla_inicio_sesion(frame))
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Continuar como invitado",
-                       "fuente_minecraft.ttf", 25,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Continuar como invitado",
+                       ruta("fuente_minecraft.ttf"), 25,
                        x=645, y=551, ancho=452, alto=50,
                        comando=lambda: pantalla_invitado(frame))
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Configuración",
-                       "fuente_minecraft.ttf", 25,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Configuración",
+                       ruta("fuente_minecraft.ttf"), 25,
                        x=645, y=612, ancho=452, alto=50,
                        comando=lambda: pantalla_configuracion(frame))
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Salir",
-                       "fuente_minecraft.ttf", 25,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Salir",
+                       ruta("fuente_minecraft.ttf"), 25,
                        x=645, y=712, ancho=452, alto=50,
                        comando=root.destroy)  # cierra la app
 
 def pantalla_inicio_sesion(frame):
     limpiar_frame(frame)
-    canvas = crear_canvas(frame, "minecraft_inicio_sesion.png")
+    canvas = crear_canvas(frame, ruta("minecraft_inicio_sesion.png"))
     fuente_mc = ("Minecraft", 16)
 
     canvas.create_text(640, 250, text="Inicia sesión en el servidor UPV",
@@ -93,53 +98,53 @@ def pantalla_inicio_sesion(frame):
     canvas.create_text(640, 360, text="Usuario",
                        font=("Minecraft", 14), fill="white", anchor="center")
     entrada_usuario = crear_entrada(frame, canvas, x=640, y=400, ancho=400, alto=40,
-                                    imagen_caja="minecraft_caja.png", fuente=fuente_mc)
+                                    imagen_caja=ruta("minecraft_caja.png"), fuente=fuente_mc)
 
     canvas.create_text(640, 460, text="Contraseña",
                        font=("Minecraft", 14), fill="white", anchor="center")
     entrada_password = crear_entrada(frame, canvas, x=640, y=500, ancho=400, alto=40,
-                                     imagen_caja="minecraft_caja.png", fuente=fuente_mc, password=True)
+                                     imagen_caja=ruta("minecraft_caja.png"), fuente=fuente_mc, password=True)
 
     def iniciar_sesion():
         usuario = entrada_usuario.get()
         password = entrada_password.get()
         print(f"Usuario: {usuario} | Contraseña: {password}")
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Iniciar sesión",
-                       "fuente_minecraft.ttf", 18,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Iniciar sesión",
+                       ruta("fuente_minecraft.ttf"), 18,
                        x=640, y=580, ancho=400, alto=40,
                        comando=iniciar_sesion)
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Volver",
-                       "fuente_minecraft.ttf", 18,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
+                       ruta("fuente_minecraft.ttf"), 18,
                        x=640, y=640, ancho=400, alto=40,
                        comando=lambda: pantalla_principal(frame))
 
 def pantalla_invitado(frame):
     limpiar_frame(frame)
-    canvas = crear_canvas(frame, "minecraft_inicio_sesion.png")
+    canvas = crear_canvas(frame, ruta("minecraft_inicio_sesion.png"))
 
     canvas.create_text(640, 300, text="Rankings",
                        font=("Minecraft", 30), fill="white", anchor="center")
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Ver ranking masculino",
-                       "fuente_minecraft.ttf", 20,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Ver ranking masculino",
+                       ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=450, ancho=452, alto=50,
                        comando=lambda: print("Ranking masculino"))  # cambia por tu pantalla
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Ver ranking femenino",
-                       "fuente_minecraft.ttf", 20,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Ver ranking femenino",
+                       ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=520, ancho=452, alto=50,
                        comando=lambda: print("Ranking femenino"))  # cambia por tu pantalla
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Volver",
-                       "fuente_minecraft.ttf", 20,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
+                       ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=650, ancho=452, alto=50,
                        comando=lambda: pantalla_principal(frame))
 
 def pantalla_configuracion(frame):
     limpiar_frame(frame)
-    canvas = crear_canvas(frame, "minecraft_inicio_sesion.png")
+    canvas = crear_canvas(frame, ruta("minecraft_inicio_sesion.png"))
 
     canvas.create_text(640, 250, text="Configuración",
                        font=("Minecraft", 30), fill="white", anchor="center")
@@ -174,8 +179,8 @@ def pantalla_configuracion(frame):
     canvas.create_window(640, 480, window=etiqueta_vol)
     slider.config(command=actualizar_label)
 
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Volver",
-                       "fuente_minecraft.ttf", 20,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
+                       ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=650, ancho=452, alto=50,
                        comando=lambda: pantalla_principal(frame))
 
