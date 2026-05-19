@@ -15,9 +15,8 @@ def get_arguments():
     if len(sys.argv) < 3:          
         print("Uso: python cli.py <fichero.xlsx> <peso_kg>")
         sys.exit(1)                # código de error
-
     ruta = sys.argv[1]           
-    peso = float(sys.argv[2 ])      
+    peso = float(sys.argv[2])      
 
     return ruta, peso
 
@@ -44,8 +43,7 @@ def run():
         "velocidad_despegue": velocidad[idx_T0],
     }
     formateados = format_results(resultados)
-    print(resultados)
-
+    
     for clave, valor in formateados.items():
         print(f"{clave}: {valor}")
 

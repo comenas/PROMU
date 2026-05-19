@@ -1,7 +1,8 @@
 from PIL import Image, ImageTk, ImageFont, ImageDraw
 import tkinter as tk
 import os
-
+from archivos_interfaz import *
+archivos = archivos_interfaz
 fuente = ImageFont.truetype("fuente_minecraft.ttf", size=24)
 ANCHO, ALTO = 1280, 960
 

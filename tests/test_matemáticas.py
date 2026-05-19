@@ -75,14 +75,15 @@ def test_mat_obj6_Integra_y0():
     assert np.allclose(resultado, 5.0, atol=0.01)
 
 def test_mat_obj7_Puntos():
-    # señal sintética: reposo, impulso, vuelo, aterrizaje
     FM = 100.0
     t = np.linspace(0, 3, 300)
     ace = np.ones(300) * 9.81
-    ace[50:80] = 15.0   # impulso
-    ace[80:150] = 9.81  # vuelo
-    ace[150] = 25.0     # aterrizaje
-    idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, t)
+    ace_y = np.ones(300) * 9.81  # positivo → signo +1
+    ace[50:80] = 15.0
+    ace[80:150] = 9.81
+    ace[150] = 25.0
+    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, ace_y, t)
+    assert idx_s < idx_T0
     assert idx_T0 < idx_L
     assert t_aire > 0
 
@@ -90,10 +91,11 @@ def test_mat_obj8_Altura():
     FM = 100.0
     t = np.linspace(0, 3, 300)
     ace = np.ones(300) * 9.81
+    ace_y = np.ones(300) * 9.81
     ace[50:80] = 15.0
     ace[80:150] = 9.81
     ace[150] = 25.0
-    h1, h2, h3 = Mat_obj8_Altura(ace, t)
+    h1, h2, h3 = Mat_obj8_Altura(ace, ace_y, t)
     assert h1 > 0
     assert h2 > 0
     assert h3 > 0

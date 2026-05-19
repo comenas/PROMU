@@ -1,3 +1,3 @@
-from interfaz.cli import run
+from interfaces.cli import run
 if __name__ == "__main__":
     run()
