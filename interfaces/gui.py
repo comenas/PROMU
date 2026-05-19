@@ -2,6 +2,7 @@ from PIL import Image, ImageTk, ImageFont, ImageDraw
 import tkinter as tk
 import os
 
+<<<<<<< Updated upstream:interfaces/gui.py
 # Ruta base: carpeta donde está este archivo
 BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
 
@@ -9,6 +10,22 @@ def ruta(nombre):
     return os.path.join(BASE, nombre)
 
 fuente = ImageFont.truetype(ruta("fuente_minecraft.ttf"), size=24)
+=======
+# ── Audio ──────────────────────────────────────────────────────────────────────
+from audio import inicializar_audio, cargar_musica, reproducir_musica, ajustar_volumen, obtener_volumen
+
+# Inicializa pygame mixer y arranca la música al importar el módulo
+inicializar_audio()
+try:
+    cargar_musica("wet hands.mp3")
+    reproducir_musica()
+    ajustar_volumen(50)           # volumen inicial 50 %
+except FileNotFoundError as e:
+    print(f"[Audio] {e} — la aplicación arrancará sin música.")
+
+# ── Configuración visual ───────────────────────────────────────────────────────
+fuente = ImageFont.truetype("fuente_minecraft.ttf", size=24)
+>>>>>>> Stashed changes:interfaz/gui.py
 ANCHO, ALTO = 1280, 960
 
 # ── Utilidades ────────────────────────────────────────────────────────────────
@@ -85,7 +102,7 @@ def pantalla_principal(frame):
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Salir",
                        ruta("fuente_minecraft.ttf"), 25,
                        x=645, y=712, ancho=452, alto=50,
-                       comando=root.destroy)  # cierra la app
+                       comando=root.destroy)
 
 def pantalla_inicio_sesion(frame):
     limpiar_frame(frame)
@@ -130,12 +147,12 @@ def pantalla_invitado(frame):
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Ver ranking masculino",
                        ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=450, ancho=452, alto=50,
-                       comando=lambda: print("Ranking masculino"))  # cambia por tu pantalla
+                       comando=lambda: print("Ranking masculino"))
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Ver ranking femenino",
                        ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=520, ancho=452, alto=50,
-                       comando=lambda: print("Ranking femenino"))  # cambia por tu pantalla
+                       comando=lambda: print("Ranking femenino"))
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 20,
@@ -149,12 +166,12 @@ def pantalla_configuracion(frame):
     canvas.create_text(640, 250, text="Configuración",
                        font=("Minecraft", 30), fill="white", anchor="center")
 
-    # Etiqueta volumen
-    canvas.create_text(640, 380, text="Volumen",
+    canvas.create_text(640, 380, text="Volumen de música",
                        font=("Minecraft", 18), fill="white", anchor="center")
 
-    # Slider de volumen
-    volumen = tk.IntVar(value=50)
+    # Slider — valor inicial igual al volumen actual de pygame
+    volumen = tk.IntVar(value=obtener_volumen())
+
     slider = tk.Scale(
         frame,
         from_=0, to=100,
@@ -170,14 +187,16 @@ def pantalla_configuracion(frame):
     )
     canvas.create_window(640, 430, window=slider, width=400, height=50)
 
-    # Mostrar valor actual
-    def actualizar_label(val):
-        etiqueta_vol.config(text=f"{val}%")
-
-    etiqueta_vol = tk.Label(frame, text="50%", font=("Minecraft", 14),
+    etiqueta_vol = tk.Label(frame, text=f"{obtener_volumen()}%", font=("Minecraft", 14),
                             bg="#1a1108", fg="white")
     canvas.create_window(640, 480, window=etiqueta_vol)
-    slider.config(command=actualizar_label)
+
+    def actualizar_volumen(val):
+        """Cambia el volumen en pygame y actualiza la etiqueta."""
+        ajustar_volumen(int(val))
+        etiqueta_vol.config(text=f"{val}%")
+
+    slider.config(command=actualizar_volumen)
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 20,
