@@ -22,20 +22,21 @@ def get_arguments():
 
 def run():
     ruta, peso = get_arguments()
-
+    
     # 1. Validar fichero
     validate_file_exists(ruta)
     validate_file_extension(ruta)
 
     # 2. Cargar datos
-    tiempo, ace_x, ace_y, ace_z, ace = Mat_obj1_AD(ruta)
+    tiempo, ace_y, ace = Mat_obj1_AD(ruta)
 
     # 3. Calcular resultados
-    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace,ace_y ,tiempo)
+    idx_T0, _, t_aire, velocidad = Mat_obj7_Puntos(ace,ace_y ,tiempo)
     h1, h2, h3 = Mat_obj8_Altura(ace,ace_y ,tiempo)
 
     # 4. Formatear y mostrar
     resultados = {
+        "peso": peso,
         "altura_vuelo": h1,
         "altura_velocidad": h2,
         "altura_desplazamiento": h3,

@@ -36,15 +36,6 @@ def extract_column_as_float(df, col_idx):
     columna = df.iloc[:, col_idx] #extrae columna
     return columna.to_numpy(dtype = float) #transforma en float
 
-def validate_no_nan(array):
-    """
-    función que valida si existe algún valor Nan dentro del array
-    """
-    validacion = np.isnan(array) #función numpy que devuelve un array de true y false
-    if validacion.any(): #mira el array por si hay algún True 
-        raise ValueError(f"Algún Valor Nan en el array") #si alguno es True lanza error
-    else:
-        return True #si no, pasa
     
 def validate_min_length(array, min_len):
     """

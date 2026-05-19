@@ -20,7 +20,7 @@ def Mat_obj1_AD(path):
         aceleracion = extract_column_as_float(archivo, 4)
     else:
         aceleracion = np.linalg.norm([ace_x, ace_y, ace_z], axis=0)
-    return tiempo, ace_x, ace_y, ace_z, aceleracion
+    return tiempo, ace_y, aceleracion
 
 def Mat_obj2_FM(tiempo):
     """
@@ -32,14 +32,14 @@ def Mat_obj2_FM(tiempo):
     FM = 1 / np.mean(np.diff(tiempo))
     return FM
 
-def Mat_obj3_Sua(ace, FM):
+def Mat_obj3_Sua(valor, FM):
     """
     Suaviza la señal con Savitzky-Golay: ventana = 15% de FM (impar), grado 2.
     """
     ventana = int(0.15 * FM)
     if ventana % 2 == 0:
         ventana += 1
-    return savgol_filter(ace, ventana, 2)
+    return savgol_filter(valor, ventana, 2)
 
 def Mat_obj4_FR(ace, FM):
     """
@@ -108,7 +108,7 @@ def Mat_obj7_Puntos(ace, ace_y, t):
     # ── t_aire: tiempo de vuelo ──
     t_aire = t[idx_L] - t[idx_T0]
 
-    return idx_s, idx_T0, idx_L, t_aire, velocidad
+    return idx_T0, idx_L, t_aire, velocidad
 
 def Mat_obj8_Altura(ace, ace_y, t):
     """
@@ -117,7 +117,7 @@ def Mat_obj8_Altura(ace, ace_y, t):
     h2 → velocidad de despegue: h = v²/(2g)
     h3 → desplazamiento:        max(disp[TO:L])
     """
-    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, ace_y, t)
+    idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, ace_y, t)
     desplazamiento = Mat_obj6_Integra(velocidad, t, 0)
     h1 = 9.81 * t_aire**2 / 8
     h2 = velocidad[idx_T0]**2 / (2 * 9.81)
