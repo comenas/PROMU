@@ -2,7 +2,6 @@ from PIL import Image, ImageTk, ImageFont, ImageDraw
 import tkinter as tk
 import os
 
-<<<<<<< Updated upstream:interfaces/gui.py
 # Ruta base: carpeta donde está este archivo
 BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
 
@@ -10,7 +9,6 @@ def ruta(nombre):
     return os.path.join(BASE, nombre)
 
 fuente = ImageFont.truetype(ruta("fuente_minecraft.ttf"), size=24)
-=======
 # ── Audio ──────────────────────────────────────────────────────────────────────
 from audio import inicializar_audio, cargar_musica, reproducir_musica, ajustar_volumen, obtener_volumen
 
@@ -24,8 +22,7 @@ except FileNotFoundError as e:
     print(f"[Audio] {e} — la aplicación arrancará sin música.")
 
 # ── Configuración visual ───────────────────────────────────────────────────────
-fuente = ImageFont.truetype("fuente_minecraft.ttf", size=24)
->>>>>>> Stashed changes:interfaz/gui.py
+fuente = ImageFont.truetype(ruta("fuente_minecraft.ttf"), size=24)
 ANCHO, ALTO = 1280, 960
 
 # ── Utilidades ────────────────────────────────────────────────────────────────
