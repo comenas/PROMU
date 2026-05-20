@@ -4,6 +4,7 @@ import tkinter as tk
 from interfaces.ui import ANCHO, ALTO
 from interfaces.principal import pantalla_principal
 from interfaces.audio import cargar_musica, reproducir_musica, ajustar_volumen
+import servidor.red as red
 import os
 
 BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "archivos_interfaz")
@@ -12,6 +13,9 @@ root = tk.Tk()
 root.title("Minecraft: Jump Edition")
 root.geometry(f"{ANCHO}x{ALTO}")
 root.resizable(False, False)
+
+# ── Inyectamos root en red.py ANTES de que cualquier pantalla lo use ───────────
+red.inicializar(root)
 
 # ── Audio ──────────────────────────────────────────────────────────────────────
 try:
