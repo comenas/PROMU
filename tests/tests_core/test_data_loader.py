@@ -50,7 +50,6 @@ def test_extract_column_as_float(tmp_path):
 
 
 
-
 def test_validate_min_lenght():
     array = np.array([1.0,2.0])
     assert validate_min_length(array, 2) ==  True

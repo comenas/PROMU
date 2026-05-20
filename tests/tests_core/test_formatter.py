@@ -1,6 +1,9 @@
 from core.formatter import *
 import pytest
 
+def test_format_weight():
+    assert format_weight(75) == "75.00 kg"
+
 def test_format_height():
     assert format_height(0.456) == "45.6 cm"
 
@@ -12,11 +15,13 @@ def test_format_time():
 
 def test_format_results():
     entrada = {
+        "peso": 75,
         "altura_vuelo": 0.45,
         "velocidad_despegue": 2.98,
         "tiempo_vuelo": 0.342
     }
     resultado = format_results(entrada)
+    assert resultado["peso"] == "75.00 kg"
     assert resultado["altura_vuelo"] == "45.0 cm"
     assert resultado["velocidad_despegue"] == "2.98 m/s"
     assert resultado["tiempo_vuelo"] == "0.342 s"
