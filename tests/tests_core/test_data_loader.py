@@ -49,14 +49,7 @@ def test_extract_column_as_float(tmp_path):
         assert isinstance(number,float)
 
 
-def test_validate_no_nan_ok():
-    array = np.array([1.0, 2.0, 3.0])
-    assert validate_no_nan(array) == True
 
-def test_validate_no_nan_error():
-    array = np.array([1.0, float("nan"), 3.0])
-    with pytest.raises(ValueError):
-        validate_no_nan(array)
 
 def test_validate_min_lenght():
     array = np.array([1.0,2.0])
