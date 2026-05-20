@@ -1,14 +1,18 @@
-# pantallas/leaderboard.py
-
 import tkinter as tk
+import os
 from interfaces.ui import crear_boton_imagen, crear_canvas, limpiar_frame
 from servidor.red import pedir_leaderboard
+
+BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
+
+def ruta(nombre):
+    return os.path.join(BASE, nombre)
 
 
 def pantalla_leaderboard(root, frame, comando, titulo):
     """Descarga y muestra el leaderboard pedido."""
     limpiar_frame(frame)
-    canvas = crear_canvas(frame, "minecraft_inicio_sesion.png")
+    canvas = crear_canvas(frame, ruta("minecraft_inicio_sesion.png"))
 
     canvas.create_text(640, 120, text=titulo,
                        font=("Minecraft", 28), fill="white", anchor="center")
@@ -28,17 +32,21 @@ def pantalla_leaderboard(root, frame, comando, titulo):
 
     txt.insert("end", "Cargando…\n")
     txt.config(state="disabled")
-    root.update()
 
-    lineas = pedir_leaderboard(comando)
-    txt.config(state="normal")
-    txt.delete("1.0", "end")
-    for linea in lineas:
-        txt.insert("end", linea + "\n")
-    txt.config(state="disabled")
+    # pedir_leaderboard es asíncrono (hilo), actualizamos la UI desde el hilo principal
+    def on_leaderboard(lineas):
+        def actualizar():
+            txt.config(state="normal")
+            txt.delete("1.0", "end")
+            for linea in lineas:
+                txt.insert("end", linea + "\n")
+            txt.config(state="disabled")
+        root.after(0, actualizar)
+
+    pedir_leaderboard(comando, on_leaderboard)
 
     from interfaces.invitado_rankings import pantalla_invitado
-    crear_boton_imagen(frame, canvas, "minecraft_boton.png", "Volver",
-                       "fuente_minecraft.ttf", 20,
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
+                       ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=730, ancho=452, alto=50,
                        comando=lambda: pantalla_invitado(root, frame))
