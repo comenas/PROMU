@@ -1,8 +1,8 @@
 # main.py – Punto de entrada. Solo arranca la ventana.
 
 import tkinter as tk
-from UI import ANCHO, ALTO
-from principal import pantalla_principal
+from interfaces.ui import ANCHO, ALTO
+from interfaces.principal import pantalla_principal
 
 root = tk.Tk()
 root.title("Minecraft: Jump Edition")
