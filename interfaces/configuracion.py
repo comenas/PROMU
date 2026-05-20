@@ -1,6 +1,7 @@
 import tkinter as tk
 import os
 from interfaces.ui import crear_boton_imagen, crear_canvas, limpiar_frame
+from interfaces.audio import ajustar_volumen, obtener_volumen
 from servidor.red import sesion, cerrar_sesion
 
 BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
@@ -18,16 +19,21 @@ def pantalla_configuracion(root, frame):
     canvas.create_text(640, 380, text="Volumen",
                        font=("Minecraft", 18), fill="white", anchor="center")
 
-    volumen = tk.IntVar(value=50)
+    volumen = tk.IntVar(value=obtener_volumen())
     slider  = tk.Scale(frame, from_=0, to=100, orient="horizontal", variable=volumen,
                        bg="#1a1108", fg="white", highlightthickness=0,
                        troughcolor="#3a3a3a", length=400, font=("Minecraft", 12), label="")
     canvas.create_window(640, 430, window=slider, width=400, height=50)
 
-    etiqueta_vol = tk.Label(frame, text="50%", font=("Minecraft", 14),
+    etiqueta_vol = tk.Label(frame, text=f"{obtener_volumen()}%", font=("Minecraft", 14),
                             bg="#1a1108", fg="white")
     canvas.create_window(640, 480, window=etiqueta_vol)
-    slider.config(command=lambda val: etiqueta_vol.config(text=f"{val}%"))
+
+    def actualizar_volumen(val):
+        ajustar_volumen(int(val))                        # ← conecta con el audio real
+        etiqueta_vol.config(text=f"{val}%")
+
+    slider.config(command=actualizar_volumen)
 
     from interfaces.principal import pantalla_principal
 
