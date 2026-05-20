@@ -6,22 +6,32 @@ from scipy.integrate import cumulative_trapezoid
 
 def Mat_obj1_AD(path):
     """
-    Carga el Excel y devuelve tiempo, ace_x, ace_y, ace_z y aceleracion absoluta.
-    Si el Excel tiene columna de aceleración absoluta la usa; si no, la calcula.
+    Carga el Excel y devuelve (tiempo, ace_y, aceleracion_absoluta).
+    Detecta columnas por nombre usando keywords, independientemente del orden.
     """
     validate_file_exists(path)
     validate_file_extension(path)
     archivo = read_excel_file(path)
-    tiempo      = extract_column_as_float(archivo, 0)
-    ace_x       = extract_column_as_float(archivo, 1)
-    ace_y       = extract_column_as_float(archivo, 2)
-    ace_z       = extract_column_as_float(archivo, 3)
-    if len(archivo.columns) > 4:
-        aceleracion = extract_column_as_float(archivo, 4)
-    else:
-        aceleracion = np.linalg.norm([ace_x, ace_y, ace_z], axis=0)
-    return tiempo, ace_y, aceleracion
+    cols = get_column_names(archivo)
 
+    idx_t   = find_column_index(cols, ["time", "tiempo", "t"])
+    idx_ax  = find_column_index(cols, ["acceleration x", "ace_x", "ax"])
+    idx_ay  = find_column_index(cols, ["acceleration y", "ace_y", "ay"])
+    idx_az  = find_column_index(cols, ["acceleration z", "ace_z", "az"])
+    idx_abs = find_column_index(cols, ["absolute", "ace", "a"])
+
+    tiempo = extract_column_as_float(archivo, idx_t)
+    ace_y  = extract_column_as_float(archivo, idx_ay)
+
+    if idx_abs is not None:
+        aceleracion = extract_column_as_float(archivo, idx_abs)
+    else:
+        ace_x = extract_column_as_float(archivo, idx_ax)
+        ace_z = extract_column_as_float(archivo, idx_az)
+        aceleracion = np.linalg.norm([ace_x, ace_y, ace_z], axis=0)
+
+    return tiempo, ace_y, aceleracion
+    
 def Mat_obj2_FM(tiempo):
     """
     Calcula la frecuencia muestral FM = 1 / mean(diff(tiempo)).

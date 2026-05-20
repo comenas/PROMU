@@ -25,6 +25,7 @@ try:
 except FileNotFoundError as e:
     print(f"[Audio] {e} — la aplicación arrancará sin música.")
 
+
 # ── Pantalla inicial ───────────────────────────────────────────────────────────
 frame = tk.Frame(root, width=ANCHO, height=ALTO)
 frame.place(x=0, y=0)

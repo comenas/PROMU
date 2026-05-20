@@ -45,3 +45,18 @@ def validate_min_length(array, min_len):
         raise ValueError(f"Hay menos valores de los mínimos en el array") #lanza error si no es así
     else:
         return True
+
+def get_column_names(df):
+    """Devuelve lista de nombres de columna en minúsculas."""
+    return [str(col).lower() for col in df.columns]
+
+def find_column_index(col_names, keywords):
+    """
+    Busca en col_names la primera columna cuyo nombre
+    contenga alguna de las keywords. Devuelve el índice o None.
+    """
+    for i, nombre in enumerate(col_names):
+        for kw in keywords:
+            if kw in nombre:
+                return i
+    return None
