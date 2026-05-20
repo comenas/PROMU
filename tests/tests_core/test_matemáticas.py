@@ -11,8 +11,9 @@ def test_mat_obj1_AD_sin_aceleraci(tmp_path):
         "ace_z":  [0.7, 0.8, 0.9]
     })
     df.to_excel(str(fichero), index=False)
-    tiempo, ace_x, ace_y, ace_z, aceleracion = Mat_obj1_AD(str(fichero))
+    tiempo, ace_y, aceleracion = Mat_obj1_AD(str(fichero))
     assert isinstance(tiempo, np.ndarray)
+    assert isinstance(ace_y, np.ndarray)
     assert isinstance(aceleracion, np.ndarray)
     assert len(tiempo) == 3
 
@@ -26,7 +27,9 @@ def test_mat_obj1_AD_con_aceleracion(tmp_path):
         "ace":    [1.0, 1.1, 1.2]
     })
     df.to_excel(str(fichero), index=False)
-    tiempo, ace_x, ace_y, ace_z, aceleracion = Mat_obj1_AD(str(fichero))
+    tiempo, ace_y, aceleracion = Mat_obj1_AD(str(fichero))
+    assert np.allclose(tiempo, [0.0,0.01,0.02])
+    assert np.allclose(ace_y, [0.4,0.5,0.6])
     assert np.allclose(aceleracion, [1.0, 1.1, 1.2])
 
 def test_mat_obj2_FM():
@@ -78,14 +81,14 @@ def test_mat_obj7_Puntos():
     FM = 100.0
     t = np.linspace(0, 3, 300)
     ace = np.ones(300) * 9.81
-    ace_y = np.ones(300) * 9.81  # positivo → signo +1
+    ace_y = np.ones(300) * 9.81  # positivo → signo 
     ace[50:80] = 15.0
     ace[80:150] = 9.81
     ace[150] = 25.0
-    idx_s, idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, ace_y, t)
-    assert idx_s < idx_T0
+    idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, ace_y, t)
     assert idx_T0 < idx_L
-    assert t_aire > 0
+    assert t_aire.any() > 0
+    assert velocidad.any() > 0 
 
 def test_mat_obj8_Altura():
     FM = 100.0

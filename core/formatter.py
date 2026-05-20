@@ -10,7 +10,7 @@ def format_time(t):
     tiempo = f"{t:.3f} s"
     return tiempo
 
-def format_peso(kg):
+def format_weight(kg):
     peso = f"{kg:.2f} kg"
     return peso
 
@@ -25,7 +25,7 @@ def format_results(diccionario):
             resultados[entrada] = format_time(diccionario[entrada])
         elif "peso" in entrada:
             print("ejecutado")
-            resultados[entrada] = format_peso(diccionario[entrada])
+            resultados[entrada] = format_weight(diccionario[entrada])
         else:
             raise ValueError(f"entrada no válida {entrada}")
     return resultados
