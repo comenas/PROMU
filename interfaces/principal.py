@@ -22,7 +22,7 @@ def pantalla_principal(root, frame):
         )
 
     from interfaces.inicio_sesion   import pantalla_inicio_sesion
-    from interfaces.invitado_rankings import pantalla_invitado
+    from interfaces.invitado import pantalla_invitado
     from interfaces.configuracion   import pantalla_configuracion
     from interfaces.enviar_salto    import pantalla_enviar_salto
     from interfaces.analisis        import pantalla_analisis
