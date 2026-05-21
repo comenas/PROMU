@@ -16,6 +16,10 @@ def test_mat_obj1_AD_sin_aceleraci(tmp_path):
     assert isinstance(ace_y, np.ndarray)
     assert isinstance(aceleracion, np.ndarray)
     assert len(tiempo) == 3
+    assert np.allclose(tiempo, [0.0,0.01,0.02])
+    assert np.allclose(ace_y, [0.4,0.5,0.6])
+    assert np.allclose(aceleracion, [0.81240384, 0.96436508, 1.12249722])
+
 
 def test_mat_obj1_AD_con_aceleracion(tmp_path):
     fichero = tmp_path / "prueba.xlsx"
