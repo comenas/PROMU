@@ -3,7 +3,7 @@ import os
 from interfaces.guizero.common.ui import crear_boton_imagen, crear_canvas, limpiar_frame
 from servidor.red import pedir_leaderboard
 
-BBBASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
+BBASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
 BASEF = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "fuentes")
 
 def ruta(nombre):
@@ -51,7 +51,7 @@ def pantalla_leaderboard(root, frame, comando, titulo):
 
     pedir_leaderboard(comando, on_leaderboard)
 
-    from interfaces.invitado import pantalla_invitado
+    from interfaces.guizero.ofline.invitado import pantalla_invitado
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=730, ancho=452, alto=50,
