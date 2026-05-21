@@ -14,7 +14,7 @@ estados = {
     "_reproductor": None,
     "_volumen_actual":  50,
     "_cola": [],
-    "_base":  None  # carpeta donde están los mp3
+    "_base":  "PROMU/archivos_interfaz/audio"  # carpeta donde están los mp3
 }
 def inicializar_audio():
     pass

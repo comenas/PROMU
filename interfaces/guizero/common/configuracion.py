@@ -1,13 +1,20 @@
 import tkinter as tk
 import os
-from interfaces.ui import crear_boton_imagen, crear_canvas, limpiar_frame
-from interfaces.audio import ajustar_volumen, obtener_volumen
+from interfaces.guizero.common.ui import crear_boton_imagen, crear_canvas, limpiar_frame
+from interfaces.guizero.common.audio import ajustar_volumen, obtener_volumen
 from servidor.red import sesion, cerrar_sesion
 
-BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
+BBASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
+BASEF = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "fuentes")
 
 def ruta(nombre):
-    return os.path.join(BASE, nombre)
+    if "png" in nombre:
+        return os.path.join(BBASEI, nombre)
+    elif "ttf" in nombre:
+        return os.path.join(BASEF, nombre)
+    else:
+        raise ValueError("Archivo no reconocido: " + nombre)
+
 
 
 def pantalla_configuracion(root, frame):
@@ -35,7 +42,7 @@ def pantalla_configuracion(root, frame):
 
     slider.config(command=actualizar_volumen)
 
-    from interfaces.principal import pantalla_principal
+    from interfaces.guizero.common.principal import pantalla_principal
 
     if sesion["autenticado"]:
         canvas.create_text(640, 540, text=f"Sesión: {sesion['usuario']}",

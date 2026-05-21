@@ -1,13 +1,13 @@
 # main.py – Punto de entrada. Arranca la ventana y la música.
 
 import tkinter as tk
-from interfaces.ui import ANCHO, ALTO
-from interfaces.principal import pantalla_principal
-from interfaces.audio import cargar_musica, reproducir_musica, ajustar_volumen
+from interfaces.guizero.common.ui import ANCHO, ALTO
+from interfaces.guizero.common.principal import pantalla_principal
+from interfaces.guizero.common.audio import cargar_musica, reproducir_musica, ajustar_volumen
 import servidor.red as red
 import os
 
-BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "archivos_interfaz")
+BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "archivos_interfaz/audio")
 
 root = tk.Tk()
 root.title("Minecraft: Jump Edition")

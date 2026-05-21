@@ -1,13 +1,24 @@
 import tkinter as tk
-from interfaces.ui import crear_boton_imagen, crear_canvas, limpiar_frame
+from interfaces.guizero.common.ui import crear_boton_imagen, crear_canvas, limpiar_frame
 from servidor.red import sesion
-from interfaces.audio import detener_musica, reproducir_musica
+from interfaces.guizero.common.audio import detener_musica, reproducir_musica
+from interfaces.guizero.online.inicio_sesion   import pantalla_inicio_sesion
+from interfaces.guizero.ofline.invitado import pantalla_invitado
+from interfaces.guizero.common.configuracion   import pantalla_configuracion
+from interfaces.guizero.online.enviar_salto    import pantalla_enviar_salto
+from interfaces.guizero.common.analisis        import pantalla_analisis
 import os
 
-BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
+BASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
+BASEF = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "fuentes")
 
 def ruta(nombre):
-    return os.path.join(BASE, nombre)
+    if "png" in nombre:
+        return os.path.join(BASEI, nombre)
+    elif "ttf" in nombre:
+        return os.path.join(BASEF, nombre)
+    else:
+        raise ValueError("Archivo no reconocido: " + nombre)
 
 _musica_activa = [True]
 
@@ -21,11 +32,7 @@ def pantalla_principal(root, frame):
             font=("Minecraft", 14), fill="#aaffaa", anchor="center"
         )
 
-    from interfaces.inicio_sesion   import pantalla_inicio_sesion
-    from interfaces.invitado import pantalla_invitado
-    from interfaces.configuracion   import pantalla_configuracion
-    from interfaces.enviar_salto    import pantalla_enviar_salto
-    from interfaces.analisis        import pantalla_analisis
+    
 
     # ── Botones principales (espaciado uniforme de 54 px) ─────────────────────
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Iniciar sesión",

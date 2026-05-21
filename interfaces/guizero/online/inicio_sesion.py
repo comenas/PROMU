@@ -1,12 +1,19 @@
 import tkinter as tk
 import os
-from interfaces.ui import crear_boton_imagen, crear_canvas, crear_entrada, limpiar_frame
+from interfaces.guizero.common.ui import crear_boton_imagen, crear_canvas, crear_entrada, limpiar_frame
 from servidor.red import conectar_y_autenticar
 
-BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
+BBASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
+BASEF = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "fuentes")
 
 def ruta(nombre):
-    return os.path.join(BASE, nombre)
+    if "png" in nombre:
+        return os.path.join(BBASEI, nombre)
+    elif "ttf" in nombre:
+        return os.path.join(BASEF, nombre)
+    else:
+        raise ValueError("Archivo no reconocido: " + nombre)
+
 
 
 def pantalla_inicio_sesion(root, frame):
@@ -85,7 +92,7 @@ def pantalla_inicio_sesion(root, frame):
                        x=640, y=615, ancho=400, alto=40,
                        comando=iniciar_sesion)
 
-    from interfaces.principal import pantalla_principal
+    from interfaces.guizero.common.principal import pantalla_principal
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 18,
                        x=640, y=668, ancho=400, alto=40,

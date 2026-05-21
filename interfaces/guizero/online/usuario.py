@@ -1,11 +1,18 @@
 import os
-from interfaces.ui import crear_boton_imagen, crear_canvas, limpiar_frame
+from interfaces.guizero.common.ui import crear_boton_imagen, crear_canvas, limpiar_frame
 from servidor.red import sesion
 
-BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
+BBASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
+BASEF = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "fuentes")
 
 def ruta(nombre):
-    return os.path.join(BASE, nombre)
+    if "png" in nombre:
+        return os.path.join(BBASEI, nombre)
+    elif "ttf" in nombre:
+        return os.path.join(BASEF, nombre)
+    else:
+        raise ValueError("Archivo no reconocido: " + nombre)
+
 
 
 def pantalla_usuario(root, frame):

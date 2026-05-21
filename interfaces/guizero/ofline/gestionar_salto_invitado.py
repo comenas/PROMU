@@ -1,14 +1,23 @@
 import tkinter as tk
 import os
 from tkinter import filedialog
-from interfaces.ui import crear_boton_imagen, crear_canvas, crear_entrada, limpiar_frame
+from interfaces.guizero.common.ui import crear_boton_imagen, crear_canvas, crear_entrada, limpiar_frame
 from core.formatter import format_results
 from core.matemáticas import Mat_obj1_AD, Mat_obj8_Altura, Mat_obj7_Puntos
+from core.formatter import format_results
+from interfaces.guizero.common.principal import pantalla_principal
 
-BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
+BBASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
+BASEF = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "fuentes")
 
 def ruta(nombre):
-    return os.path.join(BASE, nombre)
+    if "png" in nombre:
+        return os.path.join(BBASEI, nombre)
+    elif "ttf" in nombre:
+        return os.path.join(BASEF, nombre)
+    else:
+        raise ValueError("Archivo no reconocido: " + nombre)
+
 
 
 def pantalla_gestion_salto(root, frame):
@@ -91,7 +100,7 @@ def pantalla_gestion_salto(root, frame):
             "tiempo_vuelo":          t_aire,
             "velocidad_despegue":    velocidad[idx_T0],
         }
-        from core.formatter import format_results
+        
         formateados = format_results(resultados)
 
         txt_resultados.config(state="normal")
@@ -106,7 +115,6 @@ def pantalla_gestion_salto(root, frame):
                 x=640, y=680, ancho=400, alto=45,
                 comando=gestionar)
 
-    from interfaces.principal import pantalla_principal
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                 ruta("fuente_minecraft.ttf"), 20,
                 x=640, y=745, ancho=400, alto=45,

@@ -1,10 +1,18 @@
 import os
-from interfaces.ui import crear_boton_imagen, crear_canvas, limpiar_frame
+from interfaces.guizero.common.ui import crear_boton_imagen, crear_canvas, limpiar_frame
+from interfaces.guizero.common.leaderboard import pantalla_leaderboard
 
-BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
+
+BBASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
+BASEF = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "fuentes")
 
 def ruta(nombre):
-    return os.path.join(BASE, nombre)
+    if "png" in nombre:
+        return os.path.join(BBASEI, nombre)
+    elif "ttf" in nombre:
+        return os.path.join(BASEF, nombre)
+    else:
+        raise ValueError("Archivo no reconocido: " + nombre)
 
 
 def pantalla_invitado(root, frame):
@@ -15,9 +23,8 @@ def pantalla_invitado(root, frame):
     canvas.create_text(640, 280, text="Rankings",
                        font=("Minecraft", 30), fill="white", anchor="center")
 
-    from interfaces.leaderboard import pantalla_leaderboard
-    from interfaces.principal import pantalla_principal
-    from interfaces.gestionar_salto_invitado import pantalla_gestion_salto
+    from interfaces.guizero.common.principal import pantalla_principal
+    from interfaces.guizero.ofline.gestionar_salto_invitado import pantalla_gestion_salto
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Analizar salto",
                    ruta("fuente_minecraft.ttf"), 20,
