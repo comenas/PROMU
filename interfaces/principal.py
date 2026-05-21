@@ -30,22 +30,23 @@ def pantalla_principal(root, frame):
     # ── Botones principales (espaciado uniforme de 54 px) ─────────────────────
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Iniciar sesión",
                        ruta("fuente_minecraft.ttf"), 25,
-                       x=645, y=460, ancho=452, alto=50,
+                       x=645, y=490, ancho=452, alto=50,
                        comando=lambda: pantalla_inicio_sesion(root, frame))
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Continuar como invitado",
                        ruta("fuente_minecraft.ttf"), 25,
-                       x=645, y=516, ancho=452, alto=50,
+                       x=645, y=550, ancho=452, alto=50,
                        comando=lambda: pantalla_invitado(root, frame))
-
-    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Analizar salto",
-                       ruta("fuente_minecraft.ttf"), 25,
-                       x=645, y=572, ancho=452, alto=50,
+    
+    crear_boton_imagen(frame, canvas, ruta("fisica.png"), "",
+                       ruta("fuente_minecraft.ttf"), 1,
+                       x=904, y=710, ancho=50, alto=50,
                        comando=lambda: pantalla_analisis(root, frame))
+    
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Configuración",
                        ruta("fuente_minecraft.ttf"), 25,
-                       x=645, y=628, ancho=452, alto=50,
+                       x=645, y=615, ancho=452, alto=50,
                        comando=lambda: pantalla_configuracion(root, frame))
 
     if sesion["autenticado"]:
@@ -56,7 +57,7 @@ def pantalla_principal(root, frame):
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Salir",
                        ruta("fuente_minecraft.ttf"), 25,
-                       x=645, y=740, ancho=452, alto=50,
+                       x=645, y=710, ancho=452, alto=50,
                        comando=root.destroy)
 
     # ── Botón de música ───────────────────────────────────────────────────────
@@ -71,5 +72,5 @@ def pantalla_principal(root, frame):
     icono = "unmuted.png" if _musica_activa[0] else "muted.png"
     crear_boton_imagen(frame, canvas, ruta(icono), "",
                        ruta("fuente_minecraft.ttf"), 1,
-                       x=388, y=740, ancho=50, alto=50,
+                       x=386, y=710, ancho=50, alto=50,
                        comando=toggle_musica)
