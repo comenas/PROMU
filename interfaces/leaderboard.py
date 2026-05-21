@@ -45,7 +45,7 @@ def pantalla_leaderboard(root, frame, comando, titulo):
 
     pedir_leaderboard(comando, on_leaderboard)
 
-    from interfaces.invitado_rankings import pantalla_invitado
+    from interfaces.invitado import pantalla_invitado
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=730, ancho=452, alto=50,

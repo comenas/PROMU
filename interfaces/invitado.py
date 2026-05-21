@@ -17,12 +17,12 @@ def pantalla_invitado(root, frame):
 
     from interfaces.leaderboard import pantalla_leaderboard
     from interfaces.principal import pantalla_principal
-    from interfaces.analisis import pantalla_analisis
+    from interfaces.gestionar_salto_invitado import pantalla_gestion_salto
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Analizar salto",
                    ruta("fuente_minecraft.ttf"), 20,
                    x=640, y=350, ancho=452, alto=50,
-                   comando=lambda: pantalla_analisis(root, frame))
+                   comando=lambda: pantalla_gestion_salto(root, frame))
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Ver ranking masculino",
                    ruta("fuente_minecraft.ttf"), 20,

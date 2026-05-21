@@ -2,7 +2,8 @@ import tkinter as tk
 import os
 from tkinter import filedialog
 from interfaces.ui import crear_boton_imagen, crear_canvas, crear_entrada, limpiar_frame
-from servidor.red import enviar_salto
+from core.formatter import format_results
+from core.matemáticas import Mat_obj1_AD, Mat_obj8_Altura, Mat_obj7_Puntos
 
 BASE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "archivos_interfaz")
 
@@ -10,7 +11,7 @@ def ruta(nombre):
     return os.path.join(BASE, nombre)
 
 
-def pantalla_enviar_salto(root, frame):
+def pantalla_gestion_salto(root, frame):
     """Pantalla para enviar un salto — solo usuarios autenticados."""
     limpiar_frame(frame)
     canvas    = crear_canvas(frame, ruta("minecraft_inicio_sesion.png"))
@@ -18,11 +19,7 @@ def pantalla_enviar_salto(root, frame):
 
     canvas.create_text(640, 200, text="Enviar Salto",
                        font=("Minecraft", 28), fill="white", anchor="center")
-    canvas.create_text(640, 320, text="Grupo ProMu (ej: A2-4)",
-                       font=("Minecraft", 14), fill="white", anchor="center")
-    entrada_grupo = crear_entrada(frame, canvas, x=640, y=360, ancho=400, alto=40,
-                                  imagen_caja=ruta("minecraft_caja.png"), fuente=fuente_mc)
-
+    
     ruta_xlsx = tk.StringVar(value="")
 
     canvas.create_text(640, 420, text="Archivo de datos (.xlsx)",
@@ -63,48 +60,37 @@ def pantalla_enviar_salto(root, frame):
             _timer[0] = root.after(duracion_ms,
                                    lambda: canvas.itemconfig(msg_id, text=""))
 
-    def enviar():
-  
-        if _enviando[0]:
-            return
-        grupo = entrada_grupo.get().strip()
+    def gestionar():
         path  = ruta_xlsx.get()
-
-        if not grupo:
-            mostrar_mensaje("Rellena el grupo.", "#ff5555")
-            return
-        if not path:
-            mostrar_mensaje("Selecciona un archivo .xlsx.", "#ff5555")
-            return
-
-        _enviando[0] = True
-        mostrar_mensaje("Analizando salto…", "#ffff55", duracion_ms=0)
-
+        mostrar_mensaje("Analizando salto... ", "#ffff55", duracion_ms = 0)
         try:
-            from core.matemáticas import Mat_obj1_AD, Mat_obj8_Altura
             t, ace_y, ace = Mat_obj1_AD(path)
+            t_aire,_,velocidad,idx_T0 = Mat_obj7_Puntos(ace,ace_y,t)
             h1, h2, h3   = Mat_obj8_Altura(ace, ace_y, t)
-            altura_m     = int(h1 * 1000)   # h1 es el método más fiable, en metros → mm
         except Exception as e:
             _enviando[0] = False
             mostrar_mensaje(f"Error al analizar: {e}", "#ff5555")
             return
+        
+        resultados = {
+        "altura_vuelo": h1,
+        "altura_velocidad": h2,
+        "altura_desplazamiento": h3,
+        "tiempo_vuelo": t_aire,
+        "velocidad_despegue": velocidad[idx_T0],
+        }
+        formateados = format_results(resultados)
+    
+        for clave, valor in formateados.items():
+            print(f"{clave}: {valor}")
 
-        mostrar_mensaje(f"Enviando… altura: {altura_m} mm", "#ffff55", duracion_ms=0)
-
-        def on_resp(resp):
-            _enviando[0] = False
-            root.after(0, lambda: mostrar_mensaje(resp, "#55ff55"))
-
-        enviar_salto(grupo, altura_m, on_resp)
-
-    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Enviar",
-                       ruta("fuente_minecraft.ttf"), 20,
-                       x=640, y=575, ancho=400, alto=45,
-                       comando=enviar)
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Analizar",
+                ruta("fuente_minecraft.ttf"), 20,
+                x=640, y=575, ancho=400, alto=45,
+                comando=gestionar)
 
     from interfaces.principal import pantalla_principal
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
-                       ruta("fuente_minecraft.ttf"), 20,
-                       x=640, y=633, ancho=400, alto=45,
-                       comando=lambda: pantalla_principal(root, frame))
+                ruta("fuente_minecraft.ttf"), 20,
+                x=640, y=633, ancho=400, alto=45,
+                comando=lambda: pantalla_principal(root, frame))
