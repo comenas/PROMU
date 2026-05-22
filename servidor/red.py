@@ -45,10 +45,10 @@ def recibir_linea(sock):
 
 
 def recibir_leaderboard(sock):
-    """Lee líneas del leaderboard hasta el marcador de fin."""
-    MARCADORES_FIN = ("202 NO HAY MÁS REGISTROS", "201 NO HAY REGISTROS TODAVIA")
+    MARCADORES_FIN = ("202 NO HAY MAS REGISTROS", "201 NO HAY REGISTROS TODAVIA")
     lineas = []
     while True:
+        print(lineas)
         linea = recibir_linea(sock).strip()
         lineas.append(linea)
         if any(m in linea for m in MARCADORES_FIN):
@@ -87,7 +87,7 @@ def conectar_y_autenticar(usuario, password, callback_ok, callback_err):
             # HELLO
             sock.send(f"HELLO {IP_CLIENTE}\r\n".encode())
             resp = recibir_linea(sock)
-            if not resp.startswith("100"):
+            if not resp.startswith("200"):
                 sock.close()
                 callback_err(f"Error HELLO: {resp.strip()}")
                 return
@@ -95,7 +95,7 @@ def conectar_y_autenticar(usuario, password, callback_ok, callback_err):
             # USER
             sock.send(f"USER {usuario}\r\n".encode())
             resp = recibir_linea(sock)
-            if not resp.startswith("101"):
+            if not resp.startswith("200"):
                 sock.close()
                 callback_err(f"Error USER: {resp.strip()}")
                 return
@@ -103,7 +103,7 @@ def conectar_y_autenticar(usuario, password, callback_ok, callback_err):
             # PASS
             sock.send(f"PASS {password}\r\n".encode())
             resp = recibir_linea(sock)
-            if not resp.startswith("102"):
+            if not resp.startswith("200"):
                 sock.close()
                 callback_err(f"Credenciales incorrectas: {resp.strip()}")
                 return

@@ -27,9 +27,9 @@ def pantalla_usuario(root, frame):
         canvas.create_text(640, 275, text=sesion["usuario"],
                            font=("Minecraft", 18), fill="#aaffaa", anchor="center")
 
-    from interfaces.enviar_salto import pantalla_enviar_salto
-    from interfaces.leaderboard  import pantalla_leaderboard
-    from interfaces.principal    import pantalla_principal
+    from interfaces.guizero.online.enviar_salto import pantalla_enviar_salto
+    from interfaces.guizero.common.leaderboard  import pantalla_leaderboard
+    from interfaces.guizero.common.principal    import pantalla_principal
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Subir archivo de salto",
                        ruta("fuente_minecraft.ttf"), 20,
@@ -47,6 +47,18 @@ def pantalla_usuario(root, frame):
                        x=640, y=520, ancho=452, alto=50,
                        comando=lambda: pantalla_leaderboard(
                            root, frame, "GET_LEADERBOARD_WOMEN", "Ranking Femenino"))
+    
+    def logout():
+        from servidor.red import cerrar_sesion
+        cerrar_sesion()
+        from interfaces.guizero.common.principal import pantalla_principal
+        pantalla_principal(root, frame)
+
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Cerrar sesión",
+                   ruta("fuente_minecraft.ttf"), 20,
+                   x=640, y=590, ancho=452, alto=50,
+                   comando=logout)
+
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 20,

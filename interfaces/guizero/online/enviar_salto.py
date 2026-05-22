@@ -91,7 +91,7 @@ def pantalla_enviar_salto(root, frame):
             from core.matemáticas import Mat_obj1_AD, Mat_obj8_Altura
             t, ace_y, ace = Mat_obj1_AD(path)
             h1, h2, h3   = Mat_obj8_Altura(ace, ace_y, t)
-            altura_m     = int(h1 * 1000)   # h1 es el método más fiable, en metros → mm
+            altura_m     = int(h1)   # h1 es el método más fiable, en metros 
         except Exception as e:
             _enviando[0] = False
             mostrar_mensaje(f"Error al analizar: {e}", "#ff5555")
@@ -110,7 +110,7 @@ def pantalla_enviar_salto(root, frame):
                        x=640, y=575, ancho=400, alto=45,
                        comando=enviar)
 
-    from interfaces.principal import pantalla_principal
+    from interfaces.guizero.common.principal import pantalla_principal
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=633, ancho=400, alto=45,

@@ -1,7 +1,7 @@
 import tkinter as tk
 import os
 from interfaces.guizero.common.ui import crear_boton_imagen, crear_canvas, crear_entrada, limpiar_frame
-from servidor.red import conectar_y_autenticar
+from servidor.red import conectar_y_autenticar, sesion
 
 BBASEI = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "imagenes")
 BASEF = os.path.join(os.path.dirname(__file__), "..", "..", "..", "archivos_interfaz", "fuentes")
@@ -17,10 +17,17 @@ def ruta(nombre):
 
 
 def pantalla_inicio_sesion(root, frame):
+
+    if sesion["autenticado"]:
+        from interfaces.guizero.online.usuario import pantalla_usuario
+        pantalla_usuario(root, frame)
+        return
+    # ... resto del código
+
     limpiar_frame(frame)
     canvas = crear_canvas(frame, ruta("minecraft_inicio_sesion.png"))
     fuente_mc = ("Minecraft", 16)
-
+    
     canvas.create_text(640, 250, text="Inicia sesión en el servidor UPV",
                        font=("Minecraft", 24), fill="white", anchor="center")
     canvas.create_text(640, 360, text="Usuario",
@@ -77,8 +84,8 @@ def pantalla_inicio_sesion(root, frame):
         def on_ok():
             _procesando[0] = False
             limpiar_mensaje()
-            from interfaces.principal import pantalla_principal
-            root.after(0, lambda: pantalla_principal(root, frame))
+            from interfaces.guizero.online.usuario import pantalla_usuario
+            root.after(0, lambda: pantalla_usuario(root, frame))
 
         def on_err(msg):
             _procesando[0] = False

@@ -29,7 +29,7 @@ def pantalla_principal(root, frame):
     if sesion["autenticado"]:
         canvas.create_text(
             640, 400, text=f"Conectado como: {sesion['usuario']}",
-            font=("Minecraft", 14), fill="#aaffaa", anchor="center"
+            font=("Minecraft", 14), fill="#801C03", anchor="center"
         )
 
     
@@ -55,12 +55,6 @@ def pantalla_principal(root, frame):
                        ruta("fuente_minecraft.ttf"), 25,
                        x=645, y=613, ancho=452, alto=50,
                        comando=lambda: pantalla_configuracion(root, frame))
-
-    if sesion["autenticado"]:
-        crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Enviar salto",
-                           ruta("fuente_minecraft.ttf"), 25,
-                           x=645, y=684, ancho=452, alto=50,
-                           comando=lambda: pantalla_enviar_salto(root, frame))
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Salir",
                        ruta("fuente_minecraft.ttf"), 25,

@@ -20,30 +20,18 @@ def pantalla_invitado(root, frame):
     limpiar_frame(frame)
     canvas = crear_canvas(frame, ruta("minecraft_inicio_sesion.png"))
 
-    canvas.create_text(640, 280, text="Rankings",
+    canvas.create_text(640, 325, text="SIN CONEXION",
                        font=("Minecraft", 30), fill="white", anchor="center")
 
     from interfaces.guizero.common.principal import pantalla_principal
     from interfaces.guizero.ofline.gestionar_salto_invitado import pantalla_gestion_salto
 
-    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Analizar salto",
+    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Analizar salto (no se guardará)",
                    ruta("fuente_minecraft.ttf"), 20,
-                   x=640, y=350, ancho=452, alto=50,
+                   x=640, y=400, ancho=452, alto=50,
                    comando=lambda: pantalla_gestion_salto(root, frame))
-
-    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Ver ranking masculino",
-                   ruta("fuente_minecraft.ttf"), 20,
-                   x=640, y=420, ancho=452, alto=50,
-                   comando=lambda: pantalla_leaderboard(
-                       root, frame, "GET_LEADERBOARD_MEN", "Ranking Masculino"))
-
-    crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Ver ranking femenino",
-                   ruta("fuente_minecraft.ttf"), 20,
-                   x=640, y=490, ancho=452, alto=50,
-                   comando=lambda: pantalla_leaderboard(
-                       root, frame, "GET_LEADERBOARD_WOMEN", "Ranking Femenino"))
 
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                    ruta("fuente_minecraft.ttf"), 20,
-                   x=640, y=650, ancho=452, alto=50,
+                   x=640, y=500, ancho=452, alto=50,
                    comando=lambda: pantalla_principal(root, frame))

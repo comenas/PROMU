@@ -51,8 +51,8 @@ def pantalla_leaderboard(root, frame, comando, titulo):
 
     pedir_leaderboard(comando, on_leaderboard)
 
-    from interfaces.guizero.ofline.invitado import pantalla_invitado
+    from interfaces.guizero.online.usuario import pantalla_usuario
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=730, ancho=452, alto=50,
-                       comando=lambda: pantalla_invitado(root, frame))
+                       comando=lambda: pantalla_usuario(root, frame))
