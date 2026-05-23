@@ -1,5 +1,5 @@
 def format_height(value_m):
-    value = f"{value_m :.1f} m"
+    value = f"{value_m :.2f} m"
     return value
 
 def format_velocity(v):
