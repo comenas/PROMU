@@ -44,6 +44,37 @@ def _parsear_linea(linea):
         return None
 
 
+# Anchos de columna en caracteres — mismos para cabecera y filas
+_COL_ANCHOS = {
+    "pos":    6,
+    "nombre": 14,
+    "grupo":  12,
+    "altura": 9,
+    "fecha":  12,
+}
+
+
+def _fila_cabecera(parent, bg):
+    """Crea la fila de cabecera con los mismos anchos que las filas de datos."""
+    fila = tk.Frame(parent, bg=bg, pady=4)
+    fila.pack(fill="x", padx=2, pady=(0, 2))
+
+    tk.Label(fila, text="POS",     font=("Minecraft", 12), bg=bg, fg="#aaaaaa",
+             width=_COL_ANCHOS["pos"],    anchor="center").pack(side="left", padx=(6, 0))
+    tk.Label(fila, text="JUGADOR", font=("Minecraft", 12), bg=bg, fg="#aaaaaa",
+             width=_COL_ANCHOS["nombre"], anchor="w").pack(side="left", padx=8)
+    tk.Label(fila, text="GRUPO",   font=("Minecraft", 12), bg=bg, fg="#aaaaaa",
+             width=_COL_ANCHOS["grupo"],  anchor="center").pack(side="left", padx=4)
+    tk.Label(fila, text="ALTURA",  font=("Minecraft", 12), bg=bg, fg="#aaaaaa",
+             width=_COL_ANCHOS["altura"], anchor="center").pack(side="left", padx=4)
+    tk.Label(fila, text="FECHA",   font=("Minecraft", 12), bg=bg, fg="#aaaaaa",
+             width=_COL_ANCHOS["fecha"],  anchor="center").pack(side="left", padx=4)
+
+    # Línea separadora
+    sep = tk.Frame(parent, bg="#444444", height=2)
+    sep.pack(fill="x", padx=6, pady=(0, 4))
+
+
 def pantalla_leaderboard(root, frame, comando, titulo):
     """Descarga y muestra el leaderboard con formato de tabla limpia."""
     limpiar_frame(frame)
@@ -53,17 +84,9 @@ def pantalla_leaderboard(root, frame, comando, titulo):
     canvas.create_text(640, 100, text=titulo,
                        font=("Minecraft", 28), fill="white", anchor="center")
 
-    # ── Cabecera ──────────────────────────────────────────────────────────────
-    canvas.create_text(180, 175, text="POS",     font=("Minecraft", 12), fill="#aaaaaa", anchor="center")
-    canvas.create_text(390, 175, text="JUGADOR", font=("Minecraft", 12), fill="#aaaaaa", anchor="center")
-    canvas.create_text(590, 175, text="GRUPO",   font=("Minecraft", 12), fill="#aaaaaa", anchor="center")
-    canvas.create_text(770, 175, text="ALTURA",  font=("Minecraft", 12), fill="#aaaaaa", anchor="center")
-    canvas.create_text(920, 175, text="FECHA",   font=("Minecraft", 12), fill="#aaaaaa", anchor="center")
-    canvas.create_line(140, 190, 980, 190, fill="#444444", width=2)
-
-    # ── Área scrollable ───────────────────────────────────────────────────────
+    # ── Área scrollable (ocupa todo el espacio entre el título y el botón) ────
     contenedor = tk.Frame(frame, bg="#1a1108")
-    canvas.create_window(560, 490, window=contenedor, width=860, height=580)
+    canvas.create_window(560, 490, window=contenedor, width=860, height=650)
 
     scrollbar = tk.Scrollbar(contenedor, orient="vertical", bg="#2a2118",
                               troughcolor="#1a1108", activebackground="#444444")
@@ -82,6 +105,9 @@ def pantalla_leaderboard(root, frame, comando, titulo):
         lienzo_filas.itemconfig(ventana_filas, width=lienzo_filas.winfo_width())
 
     frame_filas.bind("<Configure>", _ajustar_scroll)
+
+    # ── Cabecera dentro del scroll (siempre visible al inicio) ───────────────
+    _fila_cabecera(frame_filas, "#1a1108")
 
     lbl_cargando = tk.Label(frame_filas, text="Cargando ranking…",
                              font=("Minecraft", 14), bg="#1a1108", fg="#ffff55")
@@ -118,24 +144,29 @@ def pantalla_leaderboard(root, frame, comando, titulo):
                 texto_pos = f"{medalla}{pos}º" if medalla else f"{pos}º"
 
                 tk.Label(fila, text=texto_pos, font=("Minecraft", 12),
-                         bg=bg_fila, fg=color, width=6,
+                         bg=bg_fila, fg=color,
+                         width=_COL_ANCHOS["pos"],
                          anchor="center").pack(side="left", padx=(6, 0))
 
                 tk.Label(fila, text=nombre, font=("Minecraft", 12),
-                         bg=bg_fila, fg=color, width=14,
+                         bg=bg_fila, fg=color,
+                         width=_COL_ANCHOS["nombre"],
                          anchor="w").pack(side="left", padx=8)
 
                 tk.Label(fila, text=grupo, font=("Minecraft", 11),
-                         bg=bg_fila, fg="#aaaaaa", width=12,
+                         bg=bg_fila, fg="#aaaaaa",
+                         width=_COL_ANCHOS["grupo"],
                          anchor="center").pack(side="left", padx=4)
 
                 altura_cm = altura_mm / 10
                 tk.Label(fila, text=f"{altura_cm:.1f} cm", font=("Minecraft", 12),
-                         bg=bg_fila, fg=color, width=9,
+                         bg=bg_fila, fg=color,
+                         width=_COL_ANCHOS["altura"],
                          anchor="center").pack(side="left", padx=4)
 
                 tk.Label(fila, text=fecha, font=("Minecraft", 10),
-                         bg=bg_fila, fg="#777777", width=12,
+                         bg=bg_fila, fg="#777777",
+                         width=_COL_ANCHOS["fecha"],
                          anchor="center").pack(side="left", padx=4)
 
             tk.Label(frame_filas, text="─" * 50, font=("Minecraft", 9),
