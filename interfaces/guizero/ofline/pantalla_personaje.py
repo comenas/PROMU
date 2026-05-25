@@ -15,9 +15,9 @@ def ruta(nombre):
         raise ValueError("Archivo no reconocido: " + nombre)
 
 
-# ── Criterios de asignación ──────────────────────────────────────────────────
+# ── Criterios de asignación ───────────────────────────────────────────────────
 def asignar_personaje(altura_m):
-    """Devuelve (nombre, archivo_imagen, color_nombre, descripcion) según h1 en metros."""
+    """Devuelve (nombre, archivo_imagen, color, descripcion) según h1 en metros."""
     cm = altura_m * 100
     if cm <= 15:
         return ("Slime",        "slime.png",        "#55ff55",
@@ -36,8 +36,12 @@ def asignar_personaje(altura_m):
                 "El jefe definitivo.\n¡Eres una leyenda!")
 
 
-def pantalla_personaje(root, frame, h1):
-    """Muestra el personaje de Minecraft asignado según la altura de vuelo h1 (m)."""
+def pantalla_personaje(root, frame, h1, volver_fn=None):
+    """
+    Muestra el personaje asignado según h1 (metros).
+    volver_fn: callable sin argumentos para el botón Volver.
+               Si es None, vuelve a pantalla_gestion_salto (modo offline).
+    """
     limpiar_frame(frame)
     canvas = crear_canvas(frame, ruta("minecraft_inicio_sesion.png"))
 
@@ -52,30 +56,29 @@ def pantalla_personaje(root, frame, h1):
     canvas.create_text(640, 150, text=f"Altura de vuelo: {altura_cm:.1f} cm",
                        font=("Minecraft", 16), fill="#ffff55", anchor="center")
 
-    # ── Imagen del personaje (grande, centrada) ───────────────────────────────
+    # ── Imagen del personaje ──────────────────────────────────────────────────
     try:
-        img_path = ruta(img_archivo)
-        img_pil  = Image.open(img_path).resize((280, 280), Image.NEAREST)
-        img_tk   = ImageTk.PhotoImage(img_pil)
+        img_pil = Image.open(ruta(img_archivo)).resize((280, 280), Image.NEAREST)
+        img_tk  = ImageTk.PhotoImage(img_pil)
         canvas.create_image(640, 370, image=img_tk, anchor="center")
-        canvas._personaje_img = img_tk          # evita que el GC la elimine
-    except Exception as e:
+        canvas._personaje_img = img_tk
+    except Exception:
         canvas.create_text(640, 370, text="[imagen no disponible]",
                            font=("Minecraft", 13), fill="#ff5555", anchor="center")
 
-    # ── Nombre del personaje ──────────────────────────────────────────────────
+    # ── Nombre ────────────────────────────────────────────────────────────────
     canvas.create_text(640, 535, text=nombre,
                        font=("Minecraft", 28), fill=color, anchor="center")
 
-    # ── Descripción / mensaje motivacional ────────────────────────────────────
+    # ── Descripción ───────────────────────────────────────────────────────────
     canvas.create_text(640, 595, text=descripcion,
                        font=("Minecraft", 14), fill="#dddddd",
                        anchor="center", justify="center")
 
-    # ── Barras de nivel (decorativas) ────────────────────────────────────────
+    # ── Barra de nivel ────────────────────────────────────────────────────────
     _dibujar_barra_nivel(canvas, altura_cm)
 
-    # ── Botón de info (esquina inferior izquierda) ───────────────────────────
+    # ── Botón de info ─────────────────────────────────────────────────────────
     def mostrar_info():
         ventana = tk.Toplevel(root)
         ventana.title("Criterios de asignación")
@@ -114,38 +117,33 @@ def pantalla_personaje(root, frame, h1):
                        comando=mostrar_info)
 
     # ── Botón Volver ──────────────────────────────────────────────────────────
-    from interfaces.guizero.ofline.gestionar_salto_invitado import pantalla_gestion_salto
+    if volver_fn is None:
+        from interfaces.guizero.ofline.gestionar_salto_invitado import pantalla_gestion_salto
+        volver_fn = lambda: pantalla_gestion_salto(root, frame)
+
     crear_boton_imagen(frame, canvas, ruta("minecraft_boton.png"), "Volver",
                        ruta("fuente_minecraft.ttf"), 20,
                        x=640, y=760, ancho=452, alto=50,
-                       comando=lambda: pantalla_gestion_salto(root, frame))
+                       comando=volver_fn)
 
 
 def _dibujar_barra_nivel(canvas, altura_cm):
-    """Dibuja una barra de progreso pixelada que indica el nivel alcanzado."""
-    niveles = [
-        (15,  "#55ff55"),   # Slime
-        (30,  "#aaaaff"),   # Lobo
-        (45,  "#44cc44"),   # Creeper
-        (59,  "#cc88ff"),   # Enderman
-        (80,  "#aa00ff"),   # Ender Dragon (cap visual en 80 cm)
-    ]
+    """Barra de progreso por segmentos de color, uno por nivel."""
+    niveles = ["#55ff55", "#aaaaff", "#44cc44", "#cc88ff", "#aa00ff"]
     BAR_X0, BAR_Y = 240, 660
     SEG_W, SEG_H, GAP = 148, 18, 4
-    cap = 80.0
-    progreso = min(altura_cm, cap) / cap   # 0..1
+    cap      = 80.0
+    progreso = min(altura_cm, cap) / cap
 
     total_px = 5 * SEG_W + 4 * GAP
     fill_px  = progreso * total_px
 
     x = BAR_X0
     restante = fill_px
-    for _, color in niveles:
-        # fondo del segmento (oscuro)
+    for color in niveles:
         canvas.create_rectangle(x, BAR_Y, x + SEG_W, BAR_Y + SEG_H,
                                  fill="#2a2118", outline="#444444")
-        # relleno
-        ancho_relleno = min(restante, SEG_W)
+        ancho_relleno = max(0, min(restante, SEG_W))
         if ancho_relleno > 0:
             canvas.create_rectangle(x, BAR_Y, x + ancho_relleno, BAR_Y + SEG_H,
                                      fill=color, outline="")
