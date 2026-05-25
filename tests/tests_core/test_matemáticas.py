@@ -91,8 +91,8 @@ def test_mat_obj7_Puntos():
     ace[150] = 25.0
     idx_T0, idx_L, t_aire, velocidad = Mat_obj7_Puntos(ace, ace_y, t)
     assert idx_T0 < idx_L
-    assert t_aire.any() > 0
-    assert velocidad.any() > 0 
+    assert t_aire > 0
+    assert velocidad[idx_T0] > 0
 
 def test_mat_obj8_Altura():
     FM = 100.0

@@ -45,10 +45,9 @@ def recibir_linea(sock):
 
 
 def recibir_leaderboard(sock):
-    MARCADORES_FIN = ("202 NO HAY MAS REGISTROS", "201 NO HAY REGISTROS TODAVIA")
+    MARCADORES_FIN = ("202 NO HAY MAS REGISTROS", "202 NO HAY MÁS REGISTROS", "201 NO HAY REGISTROS TODAVIA")
     lineas = []
     while True:
-        print(lineas)
         linea = recibir_linea(sock).strip()
         lineas.append(linea)
         if any(m in linea for m in MARCADORES_FIN):
@@ -56,7 +55,7 @@ def recibir_leaderboard(sock):
     return lineas
 
 
-def _abrir_socket_anonimo():
+def abrir_socket_anonimo():
     """Abre una conexión TCP sin autenticación y devuelve el socket."""
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(TIMEOUT_OP)
@@ -141,7 +140,7 @@ def pedir_leaderboard(comando, callback):
                 sock_sesion.send(f"{comando}\r\n".encode())
                 lineas = recibir_leaderboard(sock_sesion)
             else:
-                sock = _abrir_socket_anonimo()
+                sock = abrir_socket_anonimo()
                 sock_propio = True
                 sock.send(f"{comando}\r\n".encode())
                 lineas = recibir_leaderboard(sock)

@@ -53,7 +53,6 @@ def get_column_names(df):
 def find_column_index(col_names, keywords):
     """
     Busca la primera columna que coincida exactamente con alguna keyword.
-    Si no hay coincidencia exacta, busca por subcadena.
     Devuelve el índice o None.
     """
     # Primero: coincidencia exacta

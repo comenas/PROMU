@@ -5,16 +5,11 @@ import json
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
 
-print(sys.path[-1])  # muestra el último elemento añadido
-
 from core.matemáticas import Mat_obj1_AD, Mat_obj7_Puntos, Mat_obj8_Altura
 from core.formatter import format_results
+from servidor.red import recibir_linea, recibir_leaderboard, abrir_socket_anonimo, IP_SERVIDOR, SERVER_PORT, MAX_MSG
 
-# ── Configuración del servidor ────────────────────────────────────────────────
-IP_SERVIDOR = "158.42.188.200"
-SERVER_PORT = 64010
-TIMEOUT     = 10
-MAX_MSG     = 4096
+TIMEOUT = 10
 
 # ── Estado de sesión ──────────────────────────────────────────────────────────
 sesion = {
@@ -38,39 +33,6 @@ def pedir(texto):
 
 def mensaje(texto, prefijo=">>"):
     print(f"\n  {prefijo} {texto}")
-
-# ── Primitivas de red (síncronas, sin tkinter) ────────────────────────────────
-
-def recibir_linea(sock):
-    data = b""
-    while not data.endswith(b"\r\n"):
-        chunk = sock.recv(1)
-        if not chunk:
-            raise RuntimeError("Conexión cerrada por el servidor.")
-        data += chunk
-        if len(data) > MAX_MSG:
-            raise RuntimeError("Respuesta demasiado larga.")
-    return data.decode("utf-8", errors="replace")
-
-def recibir_leaderboard(sock):
-    MARCADORES_FIN = ("202 NO HAY MÁS REGISTROS", "201 NO HAY REGISTROS TODAVIA")
-    lineas = []
-    while True:
-        linea = recibir_linea(sock).strip()
-        lineas.append(linea)
-        if any(m in linea for m in MARCADORES_FIN):
-            break
-    return lineas
-
-def abrir_socket_anonimo():
-    hostname = socket.gethostname()
-    ip       = socket.gethostbyname(hostname)
-    sock     = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(TIMEOUT)
-    sock.connect((IP_SERVIDOR, SERVER_PORT))
-    sock.send(f"HELLO {ip}\r\n".encode())
-    recibir_linea(sock)
-    return sock
 
 # ── Acciones de red ───────────────────────────────────────────────────────────
 
