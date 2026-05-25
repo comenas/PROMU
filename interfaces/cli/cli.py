@@ -3,7 +3,9 @@ import os
 import socket
 import json
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+print(sys.path[-1])  # muestra el último elemento añadido
 
 from core.matemáticas import Mat_obj1_AD, Mat_obj7_Puntos, Mat_obj8_Altura
 from core.formatter import format_results
@@ -218,19 +220,11 @@ def menu_invitado():
         limpiar()
         titulo("MENÚ INVITADO")
         print("  1. Analizar salto")
-        print("  2. Ver ranking masculino")
-        print("  3. Ver ranking femenino")
         print("  0. Volver")
         opcion = pedir("Opción")
 
         if opcion == "1":
             accion_analizar_salto()
-            input("\n  Pulsa Enter para continuar…")
-        elif opcion == "2":
-            accion_ver_ranking("GET_LEADERBOARD_MEN", "RANKING MASCULINO")
-            input("\n  Pulsa Enter para continuar…")
-        elif opcion == "3":
-            accion_ver_ranking("GET_LEADERBOARD_WOMEN", "RANKING FEMENINO")
             input("\n  Pulsa Enter para continuar…")
         elif opcion == "0":
             break
@@ -271,7 +265,7 @@ def menu_usuario():
 def menu_principal():
     while True:
         limpiar()
-        titulo("VLC_JUMP — MENÚ PRINCIPAL")
+        titulo("Minecraft — Jump Edition — MENÚ PRINCIPAL")
         print("  1. Iniciar sesión")
         print("  2. Continuar como invitado")
         print("  0. Salir")
